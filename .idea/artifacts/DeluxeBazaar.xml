@@ -1,0 +1,37 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="DeluxeBazaar">
+    <output-path>$PROJECT_DIR$/</output-path>
+    <root id="archive" name="DeluxeBazaar.jar">
+      <element id="module-output" name="DeluxeBazaar" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/libraries/HInventory.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/objecthunter/exp4j/0.4.8/exp4j-0.4.8.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/wesjd/anvilgui/1.7.0-SNAPSHOT/anvilgui-1.7.0-20230628.045826-1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_9_R2/v1.9.3/signgui-1_9_R2-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_12_R1/v1.9.3/signgui-1_12_R1-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_15_R1/v1.9.3/signgui-1_15_R1-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_10_R1/v1.9.3/signgui-1_10_R1-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_8_R3/v1.9.3/signgui-1_8_R3-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_18_R1/v1.9.3/signgui-1_18_R1-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_16_R2/v1.9.3/signgui-1_16_R2-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_11_R1/v1.9.3/signgui-1_11_R1-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_13_R1/v1.9.3/signgui-1_13_R1-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_14_R1/v1.9.3/signgui-1_14_R1-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_17_R1/v1.9.3/signgui-1_17_R1-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_8_R1/v1.9.3/signgui-1_8_R1-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_16_R3/v1.9.3/signgui-1_16_R3-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_9_R1/v1.9.3/signgui-1_9_R1-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_13_R2/v1.9.3/signgui-1_13_R2-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_16_R1/v1.9.3/signgui-1_16_R1-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_8_R2/v1.9.3/signgui-1_8_R2-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_19_R1/v1.9.3/signgui-1_19_R1-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_18_R2/v1.9.3/signgui-1_18_R2-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-abstraction/v1.9.3/signgui-abstraction-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui/v1.9.3/signgui-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_20_R1/v1.9.3/signgui-1_20_R1-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_19_R3/v1.9.3/signgui-1_19_R3-v1.9.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/Rapha149/SignGUI/signgui-1_19_R2/v1.9.3/signgui-1_19_R2-v1.9.3.jar" path-in-jar="/" />
+      <element id="directory" name="itemnbt" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/de/tr7zw/item-nbt-api/2.11.3/item-nbt-api-2.11.3.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

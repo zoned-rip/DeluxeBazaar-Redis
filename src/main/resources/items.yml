@@ -1,0 +1,899 @@
+# _ ________________ ________________ ________________ _
+#|_|________________|________________|________________|_|
+#| |   _____  ______  _       _    _ __   __ ______   | |
+#| |  |  __ \|  ___ \| |     | |  | |\ \ / /|  ___ \  | |
+#|_|  | |  | | |__ \/| |     | |  | | \ V / | |__ \/  |_|
+#| |  | |  | |  __|  | |     | |  | |  > <  |  __     | |
+#| |  | |__| | |___/\| |___/\| |__| | / . \ | |___/\  | |
+#|_|  |_____/|______/|______/\______//_/ \_\\______/  |_|
+#| |                                                  | |
+#| |           DeluxeBazaar - SedatTR#8666            | |
+#|_|________________ ________________ ________________|_|
+#|_|________________|________________|________________|_|
+# If you have any question or suggestion please contact to me.
+# If you are using this plugin, you are accepting Terms of Use.
+#
+# Discord Account: SedatTR#8666
+# Discord Server: https://discord.gg/nchk86TKMT
+# Plugin Wiki: https://sedattr.gitbook.io/deluxebazaar
+groups:
+  CLAY_ITEMS:
+    main_item: CLAY_BALL
+    item_list:
+      - CLAY_BALL:12
+      - CLAY:16
+    item:
+      material: CLAY_BALL
+      name: "Clay Items"
+  COAL_ITEMS:
+    main_item: COAL
+    item_list:
+      - COAL:12
+      - CHARCOAL:16
+    item:
+      material: COAL
+      name: "Coal Items"
+  SAND_ITEMS:
+    main_item: SAND
+    item_list:
+      - SAND:12
+      - SANDSTONE:16
+    item:
+      material: SAND
+      name: "Sand Items"
+  ICE_ITEMS:
+    main_item: ICE
+    item_list:
+      - ICE:12
+      - PACKED_ICE:16
+    item:
+      material: ICE
+      name: "Ice Items"
+
+items:
+  COBBLESTONE:
+    material: COBBLESTONE
+    disable_name: true
+    prices:
+      buy: 2.0
+      sell: 1.0
+    min_prices:
+      buy: 1.0
+      sell: 0.5
+    max_prices:
+      buy: 100.0
+      sell: 50.0
+    name: "&fCobblestone"
+    details:
+    - "&8Common commodity"
+    - "&r"
+  MOSSY_COBBLESTONE:
+    material: MOSSY_COBBLESTONE
+    disable_name: true
+    prices:
+      buy: 10.0
+      sell: 5.0
+    name: "&fMossy Cobblestone"
+    details:
+    - "&8Common commodity"
+    - "&r"
+  COAL:
+    material: COAL
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fCoal"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  CHARCOAL:
+    material: CHARCOAL
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fCharcoal"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  IRON_INGOT:
+    material: IRON_INGOT
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fIron"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  GOLD_INGOT:
+    material: GOLD_INGOT
+    disable_name: true
+    prices:
+      buy: 7.5
+      sell: 5.0
+    name: "&fGold"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  DIAMOND:
+    material: DIAMOND
+    disable_name: true
+    prices:
+      buy: 10.0
+      sell: 5.0
+    name: "&fDiamond"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  EMERALD:
+    material: EMERALD
+    disable_name: true
+    prices:
+      buy: 12.5
+      sell: 7.5
+    name: "&fEmerald"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  LAPIS_LAZULI:
+    material: LAPIS_LAZULI
+    data: 4
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fLapis"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  REDSTONE:
+    material: REDSTONE
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fRedstone"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  QUARTZ:
+    material: QUARTZ
+    disable_name: true
+    prices:
+      buy: 15.0
+      sell: 10.0
+    name: "&fQuartz"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  OBSIDIAN:
+    material: OBSIDIAN
+    disable_name: true
+    prices:
+      buy: 20.0
+      sell: 15.0
+    name: "&fObsidian"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  GLOWSTONE_DUST:
+    material: GLOWSTONE_DUST
+    disable_name: true
+    prices:
+      buy: 15.0
+      sell: 10.0
+    name: "&fGlowstone"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  GRAVEL:
+    material: GRAVEL
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fGravel"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  STONE:
+    material: STONE
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fStone"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  ANDESITE:
+    material: ANDESITE
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fAndesite"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  GRANITE:
+    material: GRANITE
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fGranite"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  SOUL_SAND:
+    material: SOUL_SAND
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fSoul Sand"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  DIORITE:
+    material: DIORITE
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fDiorite"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  FLINT:
+    material: FLINT
+    disable_name: true
+    prices:
+      buy: 10.0
+      sell: 5.0
+    name: "&fFlint"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  ICE:
+    material: ICE
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fIce"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  PACKED_ICE:
+    material: PACKED_ICE
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fPacked Ice"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  NETHERRACK:
+    material: NETHERRACK
+    disable_name: true
+    prices:
+      buy: 1.0
+      sell: 0.5
+    name: "&fNetherrack"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  SAND:
+    material: SAND
+    disable_name: true
+    prices:
+      buy: 10.0
+      sell: 7.5
+    name: "&fSand"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  SANDSTONE:
+    material: SANDSTONE
+    disable_name: true
+    prices:
+      buy: 15.0
+      sell: 10.0
+    name: "&fSandstone"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  ENDER_STONE:
+    material: END_STONE
+    disable_name: true
+    prices:
+      buy: 2.0
+      sell: 1.0
+    name: "&fEnd Stone"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  SNOW_BALL:
+    material: SNOWBALL
+    disable_name: true
+    prices:
+      buy: 1.0
+      sell: 0.5
+    name: "&fSnow"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  WHEAT:
+    material: WHEAT
+    disable_name: true
+    prices:
+      buy: 2.0
+      sell: 1.0
+    name: "&fWheat"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  CARROT_ITEM:
+    material: CARROT_ITEM
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fCarrot"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  POTATO_ITEM:
+    material: POTATO_ITEM
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fPotato"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  PUMPKIN:
+    material: PUMPKIN
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fPumpkin"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  MELON:
+    material: MELON
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fMelon"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  SEEDS:
+    material: WHEAT_SEEDS
+    disable_name: true
+    prices:
+      buy: 2.0
+      sell: 1.0
+    name: "&fSeeds"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  RED_MUSHROOM:
+    material: RED_MUSHROOM
+    disable_name: true
+    prices:
+      buy: 1.0
+      sell: 0.5
+    name: "&fRed Mushroom"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  BROWN_MUSHROOM:
+    material: BROWN_MUSHROOM
+    disable_name: true
+    prices:
+      buy: 1.0
+      sell: 0.5
+    name: "&fBrown Mushroom"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  COCOA:
+    material: COCOA_BEANS
+    data: 3
+    disable_name: true
+    prices:
+      buy: 2.0
+      sell: 1.0
+    name: "&fCocoa"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  CACTUS:
+    material: CACTUS
+    group: CACTUS
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fCactus"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  SUGAR_CANE:
+    material: SUGAR_CANE
+    group: SUGAR_CANE
+    disable_name: true
+    prices:
+      buy: 20.0
+      sell: 15.0
+    name: "&fSugar Cane"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  FEATHER:
+    material: FEATHER
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fFeather"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  LEATHER:
+    material: LEATHER
+    disable_name: true
+    prices:
+      buy: 10.0
+      sell: 5.0
+    name: "&fLeather"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  PORK:
+    material: PORKCHOP
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fPork"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  RAW_CHICKEN:
+    material: CHICKEN
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fRaw Chicken"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  MUTTON:
+    material: MUTTON
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fMutton"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  RABBIT:
+    material: RABBIT
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fRabbit"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  NETHER_WART:
+    material: NETHER_WART
+    disable_name: true
+    prices:
+      buy: 3.0
+      sell: 1.5
+    name: "&fNether Wart"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  ROTTEN_FLESH:
+    material: ROTTEN_FLESH
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fRotten Flesh"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  BONE:
+    material: BONE
+    disable_name: true
+    prices:
+      buy: 7.5
+      sell: 5.0
+    name: "&fBone"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  ARROW:
+    material: ARROW
+    disable_name: true
+    prices:
+      buy: 15.0
+      sell: 10.0
+    name: "&fArrow"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  BOTTLE:
+    material: GLASS_BOTTLE
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fBottle"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  STRING:
+    material: STRING
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fString"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  SPIDER_EYE:
+    material: SPIDER_EYE
+    disable_name: true
+    prices:
+      buy: 10.0
+      sell: 5.0
+    name: "&fSpider Eye"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  GUNPOWDER:
+    material: GUNPOWDER
+    disable_name: true
+    prices:
+      buy: 15.0
+      sell: 7.5
+    name: "&fGunpowder"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  ENDER_PEARL:
+    material: ENDER_PEARL
+    disable_name: true
+    prices:
+      buy: 2.0
+      sell: 1.0
+    name: "&fEnder Pearl"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  GHAST_TEAR:
+    material: GHAST_TEAR
+    disable_name: true
+    prices:
+      buy: 25.0
+      sell: 10.0
+    name: "&fGhast Tear"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  SLIME_BALL:
+    material: SLIME_BALL
+    disable_name: true
+    prices:
+      buy: 10.0
+      sell: 5.0
+    name: "&fSlime Ball"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  BLAZE_ROD:
+    material: BLAZE_ROD
+    disable_name: true
+    prices:
+      buy: 10.0
+      sell: 5.0
+    name: "&fBlaze Rod"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  MAGMA_CREAM:
+    material: MAGMA_CREAM
+    disable_name: true
+    prices:
+      buy: 10.0
+      sell: 5.0
+    name: "&fMagma Cream"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  OAK_LOG:
+    material: OAK_LOG
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fOak Log"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  SPRUCE_LOG:
+    material: SPRUCE_LOG
+    data: 1
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fSpruce Log"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  BIRCH_LOG:
+    material: BIRCH_LOG
+    data: 2
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fBirch Log"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  DARK_OAK_LOG:
+    material: DARK_OAK_LOG
+    data: 1
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fDark Oak Log"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  ACACIA_LOG:
+    material: ACACIA_LOG
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fAcacia Log"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  JUNGLE_LOG:
+    material: JUNGLE_LOG
+    data: 3
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fJungle Log"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  RAW_FISH:
+    material: COD
+    disable_name: true
+    prices:
+      buy: 10.0
+      sell: 5.0
+    name: "&fFish"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  SALMON:
+    material: SALMON
+    data: 1
+    disable_name: true
+    prices:
+      buy: 20.0
+      sell: 10.0
+    name: "&fSalmon"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  CLOWNFISH:
+    material: TROPICAL_FISH
+    data: 2
+    disable_name: true
+    prices:
+      buy: 25.0
+      sell: 12.5
+    name: "&fClownfish"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  PUFFERFISH:
+    material: PUFFERFISH
+    data: 3
+    disable_name: true
+    prices:
+      buy: 15.0
+      sell: 7.5
+    name: "&fPufferfish"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  PRISMARINE_CRYSTALS:
+    material: PRISMARINE_CRYSTALS
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fCrystal"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  PRISMARINE_SHARD:
+    material: PRISMARINE_SHARD
+    disable_name: true
+    prices:
+      buy: 10.0
+      sell: 5.0
+    name: "&fShard"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  CLAY_BALL:
+    material: CLAY_BALL
+    disable_name: true
+    prices:
+      buy: 5.0
+      sell: 2.5
+    name: "&fClay Ball"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  CLAY:
+    material: CLAY
+    disable_name: true
+    prices:
+      buy: 20.0
+      sell: 10.0
+    name: "&fClay"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  WATER_LILY:
+    material: LILY_PAD
+    disable_name: true
+    prices:
+      buy: 75.0
+      sell: 25.0
+    name: "&fLily Pad"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  INK:
+    material: INK_SAC
+    disable_name: true
+    prices:
+      buy: 10.0
+      sell: 5.0
+    name: "&fInk"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  SPONGE:
+    material: SPONGE
+    disable_name: true
+    prices:
+      buy: 100.0
+      sell: 50.0
+    name: "&fSponge"
+    details:
+      - "&8Common commodity"
+      - "&r"
+  KING_SWORD:
+    material: DIAMOND_SWORD
+    enable_nbt: true
+    prices:
+      buy: 100000.0
+      sell: 50000.0
+    enchants:
+    - DAMAGE_ALL:10
+    - DURABILITY:5
+    name: "&eKing's Sword"
+    lore:
+      - "&7A very powerful & sharp sword, that made for King."
+      - "&r"
+      - "&6&lLEGENDARY"
+    details:
+      - "&8Legendary item"
+      - "&r"
+  KING_BOW:
+    material: BOW
+    enable_nbt: true
+    prices:
+      buy: 75000.0
+      sell: 25000.0
+    enchants:
+    - ARROW_DAMAGE:10
+    - DURABILITY:5
+    name: "&eKing's Bow"
+    lore:
+    - "&7A very strong & fast sword, that made for King."
+    - "&r"
+    - "&6&lLEGENDARY"
+    details:
+      - "&8Legendary item"
+      - "&r"
+  EPIC_ROD:
+    material: FISHING_ROD
+    enable_nbt: true
+    prices:
+      buy: 50000.0
+      sell: 25000.0
+    enchants:
+    - LUCK:5
+    - LURE:5
+    - DURABILITY:5
+    name: "&dEpic Rod"
+    lore:
+    - "&7Made by old fisherman."
+    - "&r"
+    - "&5&lEPIC"
+    details:
+      - "&8Epic item"
+      - "&r"
+  OLD_AXE:
+    material: STONE_AXE
+    enable_nbt: true
+    durability: 75
+    prices:
+      buy: 25000.0
+      sell: 10000.0
+    enchants:
+    - DIG_SPEED:6
+    - DURABILITY:3
+    name: "&bOld Axe"
+    lore:
+    - "&7100 years old axe."
+    - "&r"
+    - "&9&lRARE"
+    details:
+      - "&8Rare item"
+      - "&r"
+  OLD_PICKAXE:
+    material: IRON_PICKAXE
+    enable_nbt: true
+    durability: 100
+    prices:
+      buy: 25000.0
+      sell: 10000.0
+    enchants:
+    - DIG_SPEED:7
+    - LOOT_BONUS_BLOCKS:3
+    - DURABILITY:3
+    name: "&bOld Pickaxe"
+    lore:
+    - "&775 years old pickaxe."
+    - "&r"
+    - "&9&lRARE"
+    details:
+      - "&8Rare item"
+      - "&r"

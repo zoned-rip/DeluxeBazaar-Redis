@@ -1,0 +1,197 @@
+# _ ________________ ________________ ________________ _
+#|_|________________|________________|________________|_|
+#| |   _____  ______  _       _    _ __   __ ______   | |
+#| |  |  __ \|  ___ \| |     | |  | |\ \ / /|  ___ \  | |
+#|_|  | |  | | |__ \/| |     | |  | | \ V / | |__ \/  |_|
+#| |  | |  | |  __|  | |     | |  | |  > <  |  __     | |
+#| |  | |__| | |___/\| |___/\| |__| | / . \ | |___/\  | |
+#|_|  |_____/|______/|______/\______//_/ \_\\______/  |_|
+#| |                                                  | |
+#| |           DeluxeBazaar - SedatTR#8666            | |
+#|_|________________ ________________ ________________|_|
+#|_|________________|________________|________________|_|
+# If you have any question or suggestion please contact to me.
+# If you are using this plugin, you are accepting Terms of Use.
+#
+# Discord Account: SedatTR#8666
+# Discord Server: https://discord.gg/nchk86TKMT
+# Plugin Wiki: https://sedattr.gitbook.io/deluxebazaar
+search:
+  enabled: true
+  glass:
+    material: PINK_STAINED_GLASS_PANE
+    data: 6
+  material: OAK_SIGN
+  title: '&8Bazaar ➜ "%search%"'
+  name: "&aSearch"
+  slot: 46
+  flags:
+    - HIDE_ENCHANTS
+    - HIDE_ATTRIBUTES
+  lore:
+    selected:
+      - "&7Found total %found% items."
+      - "&7Query: &a%searched%"
+      - ""
+      - "&eLeft click to edit search!"
+      - "&bRight click to clear search!"
+    not_selected:
+      - "&7Find products by name."
+      - ""
+      - "&eClick to search!"
+    no_permission:
+      - "&7Find products by name."
+      - ""
+      - "&cYou don't have enough"
+      - "&cpermission for this category!"
+  slots: [12,13,14,15,16,17,21,22,23,24,25,26,30,31,32,33,34,35,39,40,41,42,43,44]
+
+mining:
+  glass:
+    material: LIME_STAINED_GLASS_PANE
+    data: 5
+  material: DIAMOND_PICKAXE
+  name: '&aMining'
+  color: '&a'
+  slot: 1
+  page: 1
+  flags:
+    - HIDE_ENCHANTS
+    - HIDE_ATTRIBUTES
+  slots: [12,13,14,15,16,17,21,22,23,24,25,26,30,31,32,33,34,35,39,40,41,42,43,44]
+  items:
+    - COAL_ITEMS
+    - IRON_INGOT
+    - GOLD_INGOT
+    - DIAMOND
+    - EMERALD
+    - LAPIS_LAZULI
+    - REDSTONE
+    - QUARTZ
+    - SNOW_BALL
+    - GLOWSTONE_DUST
+    - FLINT
+    - GRAVEL
+    - OBSIDIAN
+    - COBBLESTONE
+    - MOSSY_COBBLESTONE
+    - ICE_ITEMS
+    - NETHERRACK
+    - SAND_ITEMS
+    - ENDER_STONE
+    - ANDESITE
+    - STONE
+    - DIORITE
+    - GRANITE
+    - SOUL_SAND
+
+farming:
+  glass:
+    material: YELLOW_STAINED_GLASS_PANE
+    data: 4
+  material: GOLDEN_HOE
+  name: '&eFarming'
+  color: '&e'
+  slot: 10
+  page: 1
+  flags:
+    - HIDE_ENCHANTS
+    - HIDE_ATTRIBUTES
+  slots: [12,13,14,15,16,17,21,22,23,24,25,26,30,31,32,33,34,35,39,40,41,42,43,44]
+  items:
+    - WHEAT
+    - CARROT_ITEM
+    - POTATO_ITEM
+    - PUMPKIN
+    - MELON
+    - SEEDS
+    - RED_MUSHROOM
+    - BROWN_MUSHROOM
+    - COCOA
+    - CACTUS
+    - SUGAR_CANE
+    - FEATHER
+    - LEATHER
+    - PORK
+    - RAW_CHICKEN
+    - MUTTON
+    - RABBIT
+    - NETHER_WART
+
+combat:
+  glass:
+    material: RED_STAINED_GLASS_PANE
+    data: 14
+  material: IRON_SWORD
+  name: '&cCombat'
+  color: '&c'
+  slot: 19
+  page: 1
+  flags:
+    - HIDE_ENCHANTS
+    - HIDE_ATTRIBUTES
+  slots: [12,13,14,15,16,17,21,22,23,24,25,26,30,31,32,33,34,35,39,40,41,42,43,44]
+  items:
+    - ROTTEN_FLESH
+    - BONE
+    - ARROW
+    - STRING
+    - SPIDER_EYE
+    - GUNPOWDER
+    - ENDER_PEARL
+    - GHAST_TEAR
+    - SLIME_BALL
+    - BLAZE_ROD
+    - MAGMA_CREAM
+    - BOTTLE
+
+foragingfishing:
+  glass:
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    data: 3
+  material: FISHING_ROD
+  name: '&bWoods & Fishes'
+  color: '&b'
+  slot: 28
+  page: 1
+  flags:
+    - HIDE_ENCHANTS
+    - HIDE_ATTRIBUTES
+  slots: [12,13,14,15,16,17,21,22,23,24,25,26,30,31,32,33,34,35,39,40,41,42,43,44]
+  items:
+    - OAK_LOG
+    - SPRUCE_LOG
+    - BIRCH_LOG
+    - DARK_OAK_LOG
+    - ACACIA_LOG
+    - JUNGLE_LOG
+    - RAW_FISH
+    - SALMON
+    - CLOWNFISH
+    - PUFFERFISH
+    - PRISMARINE_CRYSTALS
+    - PRISMARINE_SHARD
+    - CLAY_ITEMS
+    - WATER_LILY
+    - INK
+    - SPONGE
+
+other:
+  glass:
+    material: ORANGE_STAINED_GLASS_PANE
+    data: 1
+  material: COMPASS
+  name: '&6Other'
+  color: '&6'
+  slot: 37
+  page: 1
+  flags:
+    - HIDE_ENCHANTS
+    - HIDE_ATTRIBUTES
+  slots: [12,13,14,15,16,17,21,22,23,24,25,26,30,31,32,33,34,35,39,40,41,42,43,44]
+  items:
+    - KING_SWORD
+    - KING_BOW
+    - EPIC_ROD
+    - OLD_AXE
+    - OLD_PICKAXE

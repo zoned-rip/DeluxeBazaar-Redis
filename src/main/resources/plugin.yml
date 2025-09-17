@@ -1,0 +1,37 @@
+name: DeluxeBazaar
+main: me.sedattr.deluxebazaar.DeluxeBazaar
+
+author: SedatTR
+version: 10.0
+api-version: 1.13
+folia-supported: true
+
+description: The best, cheap, advanced, fully customizable bazaar plugin; like popular server!
+website: https://discord.gg/nchk86TKMT
+softdepend:
+  - Vault
+  - CoinsEngine
+  - HeadDatabase
+  - ProtocolLib
+  - RoyaleEconomy
+  - PlaceholderAPI
+  - PlayerPoints
+  - TokenManager
+  - Lands
+  - EcoBits
+  - ExecutableItems
+  - MMOItems
+  - EcoItems
+  - libreforge
+  - eco
+  - DeluxeBazaarRedis
+  - EdPrison
+  - CMI
+
+commands:
+  bazaar:
+    description: Default bazaar command.
+    aliases: [deluxebazaar, bz, bzr]
+  bazaaradmin:
+    description: Default bazaar admin command.
+    aliases: [deluxebazaaradmin, bzadmin, bzradmin]

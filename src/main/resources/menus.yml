@@ -1,0 +1,1067 @@
+# _ ________________ ________________ ________________ _
+#|_|________________|________________|________________|_|
+#| |   _____  ______  _       _    _ __   __ ______   | |
+#| |  |  __ \|  ___ \| |     | |  | |\ \ / /|  ___ \  | |
+#|_|  | |  | | |__ \/| |     | |  | | \ V / | |__ \/  |_|
+#| |  | |  | |  __|  | |     | |  | |  > <  |  __     | |
+#| |  | |__| | |___/\| |___/\| |__| | / . \ | |___/\  | |
+#|_|  |_____/|______/|______/\______//_/ \_\\______/  |_|
+#| |                                                  | |
+#| |           DeluxeBazaar - SedatTR#8666            | |
+#|_|________________ ________________ ________________|_|
+#|_|________________|________________|________________|_|
+# If you have any question or suggestion please contact to me.
+# If you are using this plugin, you are accepting Terms of Use.
+#
+# Discord Account: SedatTR#8666
+# Discord Server: https://discord.gg/nchk86TKMT
+# Plugin Wiki: https://sedattr.gitbook.io/deluxebazaar
+items:
+  glass:
+    material: BLACK_STAINED_GLASS_PANE
+    data: 15
+    name: "&r"
+  close:
+    material: BARRIER
+    data: 0
+    name: "&cClose Menu"
+    lore:
+      - "&7Click to close menu!"
+  goBack:
+    material: ARROW
+    data: 0
+    name: "&eGo Back"
+    lore:
+      - "&7Click to go back to previous menu!"
+
+menus:
+  main:
+    sounds:
+      category:
+        enabled: true
+        type: "ORB_PICKUP"
+        volume: 1
+        pitch: 1
+      item:
+        enabled: true
+        type: "ORB_PICKUP"
+        volume: 1
+        pitch: 1
+    title: "&8Bazaar ➜ %category_name% (%current_page%/%total_page%)"
+    size: 54
+    glass: [2,3,4,5,6,7,8,9,11,18,20,27,29,36,38,45,47,49,52,54]
+    close: 50
+    manage:
+      material: BOOK
+      data: 0
+      slot: 51
+      name: "&2Manage Orders"
+      lore:
+        none:
+          - "&7You don't have any ongoing orders."
+          - "&r"
+          - "&aClick to manage!"
+        order:
+          - "&7Orders: &e%order_amount%"
+          - "&7Items: &a%item_amount%&7x"
+          - "&7Escrow: &6%total_price% coins"
+          - "&r"
+          - "&aClick to manage!"
+        collectable:
+          - "&7Total Orders: &e%order_amount%"
+          - "&7You have &a%collectable_items% items &7to claim!"
+          - "&7You have &e%collectable_coins% coins &7to claim!"
+          - "&r"
+          - "&alick to manage!"
+    sell:
+      maximum: 10 # Maximum item count in lore.
+      material: CHEST
+      data: 0
+      slot: 48
+      items:
+        sellable: " &e%item_amount%&7x &f%item_name_colored% &7for &6%item_sell_price% coins"
+        more: "&r  &7and &f%other_items% &7more items..."
+      name: "&6Sell Inventory"
+      lore:
+        nothing:
+          - "&7Instantly sell any items in your"
+          - "&7inventory that can be sold on"
+          - "&7the Bazaar."
+          - ""
+          - "&cYou don't have anything to sell!"
+        header:
+          - "&7Instantly sell any items in your"
+          - "&7inventory that can be sold on"
+          - "&7the Bazaar."
+          - "&r"
+        footer:
+          - "&r"
+          - "&7Total Earnings: &6%total_price% coins"
+          - "&eClick to sell items!"
+    previous:
+      material: ARROW
+      data: 0
+      slot: 49
+      name: "&ePrevious Page"
+      lore:
+        - "&7Click to go back to previous menu!"
+    next:
+      material: ARROW
+      data: 0
+      slot: 51
+      name: "&aNext Page"
+      lore:
+        - "&7Click to go to next page!"
+    modes:
+      direct:
+        material: IRON_ORE
+        data: 0
+        name: "&3Direct Mode"
+        lore:
+          - "&8Bazaar View"
+          - "&r"
+          - "&7View buy and sell prices of"
+          - "&7each product."
+          - "&r"
+          - "&bClick to toggle view"
+        slot: 53
+      advanced:
+        material: GOLD_ORE
+        data: 0
+        name: "&3Advanced Mode"
+        lore:
+          - "&8Bazaar View"
+          - "&r"
+          - "&7View prices, orders volumes,"
+          - "&7recent transactions"
+          - "&7for each product."
+          - "&r"
+          - "&bClick to toggle view"
+        slot: 53
+
+  items: # Subcategories menu
+    title: "&8%category_name% ➜ %item_name%"
+    size: 27
+    glass: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,21,25,26,27]
+    close: 23
+    back: 22
+    sell:
+      material: CHEST
+      data: 0
+      slot: 20
+      maximum: 10
+      items:
+        sellable: " &e%item_amount%&7x &f%item_name_colored% &7for &6%item_sell_price% coins"
+        more: "&r  &7and &f%other_items% &7more items..."
+      name: "&6Sell Items"
+      lore:
+        nothing:
+          - "&7Instantly sell all %item_name%"
+          - "&7derivatives in your inventory."
+          - ""
+          - "&cYou don't have anything to sell!"
+        header:
+          - "&7Instantly sell all %item_name%"
+          - "&7derivatives in your inventory."
+          - "&r"
+        footer:
+          - "&r"
+          - "&7Total Earnings: &6%total_price% coins"
+          - "&eClick to sell items!"
+    manage:
+      material: BOOK
+      data: 0
+      slot: 24
+      name: "&2Manage Orders"
+      lore:
+        none:
+          - "&7You don't have any ongoing"
+          - "&7orders for these products."
+          - "&r"
+          - "&8You have %other_order_amount% other orders."
+          - "&aClick to manage!"
+        order:
+          - "&7Orders: &e%order_amount%"
+          - "&7Items: &a%item_amount%&7x"
+          - "&7Escrow: &6%total_price% coins"
+          - "&r"
+          - "&8You have %other_order_amount% other orders."
+          - "&aClick to manage!"
+        collectable:
+          - "&7Total Orders: &e%order_amount%"
+          - "&7You have &a%collectable_items% items &7to claim!"
+          - "&7You have &e%collectable_coins% coins &7to claim!"
+          - "&r"
+          - "&8You have %other_order_amount% other orders."
+          - "&aClick to manage!"
+
+  item:
+    title: "&8%main_item_name% ➜ %item_name%"
+    size: 27
+    glass: [1,2,3,4,5,6,7,8,9,10,13,15,18,19,20,21,24,25,26,27]
+    close: 23
+    back: 22
+    example: 14
+    buy:
+      material: GOLDEN_HORSE_ARMOR
+      data: 0
+      slot: 11
+      name: "&2Buy Instantly"
+      lore:
+        - "&8%item_name%"
+        - "&r"
+        - "&7Price Per Unit: &6%buy_price% coins"
+        - "&7Stack Price: &6%buy_price_stack% coins"
+        - "&r"
+        - "&aClick to pick amount!"
+    sell:
+      material: HOPPER
+      data: 0
+      slot: 12
+      name: "&6Sell Instantly"
+      lore:
+        none:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Item Amount: &a0&7x"
+          - "&7Unit Price: &6%sell_price% coins"
+          - "&r"
+          - "&cNone to sell in your inventory!"
+        sell:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Item Amount: &a%total_amount%&7x"
+          - "&7Unit Price: &6%sell_price% coins"
+          - "&7Total Price: &6%total_price% coins"
+          - "&r"
+          - "&eClick to open sell menu!"
+    buyOrder:
+      material: FILLED_MAP
+      data: 0
+      slot: 16
+      name: "&2Create Buy Order"
+      flags:
+        - HIDE_POTION_EFFECTS
+      lore:
+        order: " &8- &6%order_price% coins &7each &8| &a%item_amount%&7x from &f%order_amount% &7orders"
+        nothing:
+          - "&8%item_name%"
+          - "&r"
+          - "&7I can't find any buy order for this item."
+          - "&aClick to setup first buy order!"
+        header:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Top Orders:"
+        footer:
+          - "&r"
+          - "&aClick to setup buy order!"
+    sellOffer:
+      material: MAP
+      data: 0
+      slot: 17
+      name: "&6Create Sell Offer"
+      flags:
+        - HIDE_POTION_EFFECTS
+      lore:
+        offer: " &8- &6%order_price% coins &7each &8| &e%item_amount%&7x from &f%order_amount% &7offers"
+        nothing:
+          - "&8%item_name%"
+          - "&r"
+          - "&7I can't find any sell offer for this item."
+          - "&eClick to setup first sell offer!"
+        header:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Top Offers:"
+        footer:
+          - "&r"
+          - "&eClick to setup sell offer!"
+    stats:
+      material: PAPER
+      data: 0
+      slot: 24
+      name: "&aStats"
+      lore:
+        - "&8%item_name%"
+        - "&r"
+        - "&7Buy Price: &6%buy_price% coins"
+        - "&7Sell Price: &6%sell_price% coins"
+        - "&r"
+        - "&7Buy Amount: &a%buy_amount%x items"
+        - "&7Sell Amount: &e%sell_amount%x items"
+
+  buy:
+    title: "&8%item_name% ➜ Buy"
+    size: 27
+
+    items: # You can add unlimited, or remove which one you want. Don't write material to fill or custom type items.
+      buy1:
+        type: "normal" # normal, custom or fill
+        amount: 1
+        count: 1 # Buy count
+        slot: 11
+        name: "&2Buy 1x Amount"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Item Amount: &a%total_amount%x"
+          - "&7Unit Price: &6%unit_price% coins"
+          - "&7Total Price: &6%total_price% coins"
+          - "&r"
+          - "&aClick to buy now!"
+      buy16:
+        type: "normal" # normal, custom or fill
+        amount: 16
+        count: 16 # Buy count
+        slot: 13
+        name: "&2Buy 16x Amount"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Item Amount: &a%total_amount%x"
+          - "&7Unit Price: &6%unit_price% coins"
+          - "&7Total Price: &6%total_price% coins"
+          - "&r"
+          - "&aClick to buy now!"
+      buy32:
+        type: "normal" # normal, custom or fill
+        amount: 32
+        count: 32 # Buy count
+        slot: 15
+        name: "&2Buy 32x Amount"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Item Amount: &a%total_amount%x"
+          - "&7Unit Price: &6%unit_price% coins"
+          - "&7Total Price: &6%total_price% coins"
+          - "&r"
+          - "&aClick to buy now!"
+      customamount:
+        type: "custom" # normal, custom or fill
+        amount: 1
+        slot: 17
+        default:
+          material: OAK_SIGN # Normal item
+          data: 0
+          glow: false
+          name: "&6Custom Amount"
+          lore:
+            - "&8%item_name%"
+            - "&r"
+            - "&7Buy up to &a%empty_slots%x"
+            - "&eClick to specify!"
+        invalid:
+          material: REDSTONE_BLOCK # Invalid item
+          data: 0
+          glow: false
+          name: "&6Custom Amount"
+          lore:
+            - "&8%item_name%"
+            - "&r"
+            - "&7Invalid amount entered."
+            - "&eClick to fixup!"
+      fillinventory:
+        type: "fill" # normal, custom or fill
+        material: CHEST # Normal item
+        data: 0
+        slot: 24
+        glow: true
+        name: "&aFill Inventory"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Item Amount: &a%empty_slots%x"
+          - "&7Unit Price: &6%unit_price% coins"
+          - "&7Total Price: &6%total_price% coins"
+          - "&r"
+          - "&eClick to fill inventory now!"
+    glass: [1,2,3,4,5,6,7,8,9,10,12,13,14,15,16,18,19,20,21,24,25,26,27]
+    close: 23
+    back: 22
+
+  sell:
+    title: "&8%item_name% ➜ Sell"
+    size: 27
+    items: # You can add unlimited, or remove which one you want. Don't write material to fill or custom type items.
+      sell1:
+        type: "normal" # normal, custom or fill
+        amount: 1
+        count: 1 # Sell count
+        slot: 11
+        name: "&6Sell 1x Amount"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Item Amount: &a%total_amount%x"
+          - "&7Unit Price: &6%unit_price% coins"
+          - "&7You Earn: &6%total_price% coins"
+          - "&r"
+          - "&eClick to sell now!"
+      sell16:
+        type: "normal" # normal, custom or fill
+        amount: 16
+        count: 16 # Sell count
+        slot: 13
+        name: "&6Sell 16x Amount"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Item Amount: &a%total_amount%x"
+          - "&7Unit Price: &6%unit_price% coins"
+          - "&7You Earn: &6%total_price% coins"
+          - "&r"
+          - "&eClick to sell now!"
+      sell32:
+        type: "normal" # normal, custom or fill
+        amount: 32
+        count: 32 # Sell count
+        slot: 15
+        name: "&6Sell 32x Amount"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Item Amount: &a%total_amount%x"
+          - "&7Unit Price: &6%unit_price% coins"
+          - "&7You Earn: &6%total_price% coins"
+          - "&r"
+          - "&eClick to sell now!"
+      customamount:
+        type: "custom" # normal, custom or fill
+        amount: 1
+        slot: 17
+        default:
+          material: OAK_SIGN # Normal item
+          data: 0
+          glow: false
+          name: "&aCustom Amount"
+          lore:
+            - "&8%item_name%"
+            - "&r"
+            - "&7Sell up to &a%empty_slots%x"
+            - "&r"
+            - "&eClick to specify!"
+        invalid:
+          material: REDSTONE_BLOCK # Invalid item
+          data: 0
+          glow: false
+          name: "&aCustom Amount"
+          lore:
+            - "&8%item_name%"
+            - "&r"
+            - "&7Invalid amount!"
+            - "&r"
+            - "&eClick to fixup!"
+      sellinventory:
+        type: "all" # normal, custom or all
+        material: CHEST # Normal item
+        data: 0
+        amount: 1
+        slot: 24
+        glow: true
+        name: "&aSell Inventory"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Amount: &a%empty_slots%x"
+          - "&r"
+          - "&7Price Per Unit: &6%unit_price% coins"
+          - "&7You Earn: &6%total_price% coins"
+    glass: [1,2,3,4,5,6,7,8,9,10,12,13,14,15,16,18,19,20,21,24,25,26,27]
+    close: 23
+    back: 22
+
+  order:
+    title: "&8Manage Orders (#%current_page%)"
+    size: 36
+    items:
+      buy: [11,12,13,14,15,16,17]
+      sell: [20,21,22,23,24,25,26]
+    glass: [1,2,3,4,5,6,7,8,9,10,18,19,27,28,29,30,33,34,35,36]
+    close: 32
+    back: 31
+    pagination: false # page system
+    previous:
+      material: ARROW
+      data: 0
+      slot: 28
+      name: "&ePrevious Page"
+      lore:
+        - "&7Click to go back to previous page!"
+    next:
+      material: ARROW
+      data: 0
+      slot: 36
+      name: "&aNext Page"
+      lore:
+        - "&7Click to go to next page!"
+
+  categoryEdit:
+    title: "&8Editing Category: &7%category_name%"
+    size: 54
+    glass: [1,2,3,4,6,7,8,9,10,18,19,27,28,36,37,45,46,47,48,49,51,52,53,54]
+    slots: [11,12,13,14,15,16,17,20,21,22,23,24,25,26,29,30,31,32,33,34,35,38,39,40,41,42,43,44]
+    close: 50
+    example: 5
+    exampleItem:
+      name: "&f%item_name_colored%"
+      lore:
+        - "&f%item_lore%"
+        - "&r"
+        - "&7Buy Price: &6%item_buy_price% coins"
+        - "&7Sell Price: &6%item_sell_price% coins"
+        - "&7Item Slot: &f%item_slot%"
+        - "&r"
+        - "&eClick to edit this item!"
+    createItem:
+      name: "&aSlot &f%item_slot%"
+      material: LIME_STAINED_GLASS_PANE
+      data: 5
+      lore:
+        - "&7Click to create new item!"
+
+  itemEdit:
+    title: "&8Creating Item: &7%item_name%"
+    size: 27
+    glass: [1,2,3,4,6,7,8,9,10,18,19,20,21,22,24,25,26,27]
+    close: 23
+    example: 5
+    buyPrice:
+      material: INK_SAC
+      data: 10
+      slot: 11
+      name: "&2Buy Price"
+      lore:
+        - "&7Current Price: &6%buy_price% coins"
+        - "&r"
+        - "&aClick to edit buy price!"
+    sellPrice:
+      material: INK_SAC
+      data: 11
+      slot: 12
+      name: "&6Sell Price"
+      lore:
+        - "&7Current Price: &6%sell_price% coins"
+        - "&r"
+        - "&eClick to edit sell price!"
+    itemName:
+      material: INK_SAC
+      data: 9
+      slot: 13
+      name: "&5Item Name"
+      lore:
+        - "&7Current Name: &f%item_name_colored%"
+        - "&r"
+        - "&dClick to edit item name!"
+    itemStack:
+      material: INK_SAC
+      data: 0
+      slot: 14
+      name: "&4Item Stack"
+      lore:
+        - "&cClick to change old item stack"
+        - "&cwith the item stack you holding!"
+    itemSlot:
+      material: INK_SAC
+      data: 14
+      slot: 15
+      name: "&3Item Slot"
+      lore:
+        - "&7Current Slot: &f%item_slot%. slot"
+        - "&r"
+        - "&bClick to edit item slot!"
+    maximumBuyPrice:
+      material: INK_SAC
+      data: 12
+      slot: 16
+      name: "&2Maximum Buy Price"
+      lore:
+        - "&7Current Price: &6%maximum_buy_price% coins"
+        - "&r"
+        - "&aClick to edit maximum buy price!"
+    maximumSellPrice:
+      material: INK_SAC
+      data: 1
+      slot: 17
+      name: "&6Maximum Sell Price"
+      lore:
+        - "&7Current Price: &6%maximum_sell_price% coins"
+        - "&r"
+        - "&eClick to edit maximum sell price!"
+
+  orderSettings:
+    title: "&8Order Options"
+    size: 27
+    glass: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,24,25,26,27]
+    close: 23
+    back: 22
+    cancel:
+      material: RED_TERRACOTTA
+      data: 14
+      slot: 12
+      name: "&cCancel Order"
+      lore:
+        - "&7You will be refunded &6%total_price% coins"
+        - "&7from &a%total_amount%&7x missing items."
+        - "&r"
+        - "&eClick to cancel!"
+    change:
+      material: NAME_TAG
+      data: 0
+      slot: 16
+      name: "&aChange Price"
+      lore:
+        buy:
+          - "&7Directly create a new buy order"
+          - "&7for &a%total_amount%&7x items."
+          - "&r"
+          - "&7Current Unit Price: &6%order_price% coins"
+          - "&7Bazaar Unit Price: &6%unit_price% coins"
+          - "&r"
+          - "&eClick to cancel!"
+        sell:
+          - "&7Directly create a new buy order"
+          - "&7for &a%total_amount%&7x items."
+          - "&r"
+          - "&7Current Unit Price: &6%order_price% coins"
+          - "&7Bazaar Unit Price: &6%unit_price% coins"
+          - "&r"
+          - "&eClick to cancel!"
+
+  confirm:
+    buyOrder:
+      title: "&8Buy Order Setup ➜ Confirm"
+      size: 27
+      glass: [1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,21,24,25,26,27]
+      close: 23
+      back: 22
+      item:
+        name: "&aBuy Order"
+        slot: 14
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Order: &a%total_amount%x &f%item_name_colored%"
+          - "&r"
+          - "&7Price Per Unit: &6%unit_price% coins"
+          - "&7Total Price: &6%total_price% coins"
+          - "&r"
+          - "&eClick to submit order!"
+
+    sellOffer:
+      title: "&8Sell Offer Setup ➜ Confirm"
+      size: 27
+      glass: [1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,21,24,25,26,27]
+      close: 23
+      back: 22
+      item:
+        name: "&aSell Offer"
+        slot: 14
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Order: &a%total_amount%x &f%item_name_colored%"
+          - "&r"
+          - "&7Price Per Unit: &6%unit_price% coins"
+          - "&7Total Price: &6%total_price% coins"
+          - "&r"
+          - "&eClick to submit order!"
+
+    buy:
+      title: "&8Confirm Buy"
+      size: 27
+      item:
+        name: "&aCustom Amount"
+        slot: 14
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Amount: &a%total_amount%x"
+          - "&7Price: &6%total_price% coins"
+          - "&r"
+          - "&eClick to buy now!"
+      glass: [1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,21,24,25,26,27]
+      close: 23
+      back: 22
+
+    sell:
+      title: "&8Confirm Sell"
+      size: 27
+      item:
+        name: "&aCustom Amount"
+        slot: 14
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Amount: &a%total_amount%x"
+          - "&7You Earn: &6%total_price% coins"
+          - "&r"
+          - "&eClick to sell now!"
+      glass: [1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,21,24,25,26,27]
+      close: 23
+      back: 22
+
+  sellAll:
+    title: "&8Sell All"
+    size: 27
+    confirm:
+      notSold:
+        material: YELLOW_TERRACOTTA
+        data: 4
+        slot: 12
+        name: "&eConfirm"
+        lore:
+          - "&7Item Amount: &a%total_amount%x items"
+          - "&7Total Price: &6%total_price% coins"
+          - "&r"
+          - "&eClick to sell items now!"
+      sold:
+        material: LIME_TERRACOTTA
+        data: 5
+        slot: 12
+        name: "&aSold Items"
+        lore:
+          - "&7You sold &e%total_amount%x items &7for total &6%total_price% coins&7!"
+    cancel:
+      material: RED_TERRACOTTA
+      data: 14
+      slot: 16
+      name: "&cCancel"
+      lore:
+        - "&7Click to cancel!"
+    back: 23
+
+  buyOrder:
+    title: "&8Buy Order Setup ➜ Item Amount"
+    size: 36
+    glass: [1,2,3,4,5,6,7,8,9,10,12,14,16,18,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36]
+    close: 32
+    back: 31
+    items:
+      order1:
+        type: "normal"
+        amount: 1 # Material amount in menu
+        count: 1 # Buy order count
+        slot: 11
+        name: "&aBuy &e1x &aAmount"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Item Amount: &a%total_amount%x"
+          - "&eClick to proceed!"
+      order32:
+        type: "normal"
+        amount: 32 # Material amount in menu
+        count: 32 # Buy order count
+        slot: 13
+        name: "&aBuy &e32x &aAmount"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Item Amount: &a%total_amount%x"
+          - "&eClick to proceed!"
+      order64:
+        type: "normal"
+        amount: 64 # Material amount in menu
+        count: 64 # Buy order count
+        slot: 15
+        name: "&aBuy &e64x &aAmount"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Item Amount: &a%total_amount%x"
+          - "&eClick to proceed!"
+      customamount:
+        type: "custom"
+        amount: 1
+        slot: 17
+        default:
+          material: OAK_SIGN
+          data: 0
+          glow: false
+          name: "&aCustom Amount"
+          lore:
+            - "&8%item_name%"
+            - "&r"
+            - "&7Order up to &a%maximum_amount%x"
+            - "&r"
+            - "&eClick to specify!"
+        invalid:
+          material: REDSTONE_BLOCK
+          data: 0
+          glow: false
+          name: "&aCustom Amount"
+          lore:
+            - "&8%item_name%"
+            - "&r"
+            - "&7Your Input: &c%input%"
+            - "&cError: Invalid amount"
+            - "&r"
+            - "&eClick to fixup!"
+
+  sellOffer:
+    title: "&8Sell Offer Setup ➜ Item Amount"
+    size: 36
+    glass: [1,2,3,4,5,6,7,8,9,10,12,14,16,18,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36]
+    close: 32
+    back: 31
+    items:
+      offer1:
+        type: "normal"
+        amount: 1 # Item's amount in menu.
+        count: 1 # Buy order count.
+        slot: 11
+        name: "&6Sell &e1x &6Amount"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Item Amount: &a%total_amount%x"
+          - "&eClick to proceed!"
+      offer32:
+        type: "normal"
+        amount: 32
+        count: 32
+        slot: 13
+        name: "&6Sell &e32x &6Amount"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Item Amount: &a%total_amount%x"
+          - "&eClick to proceed!"
+      offer64:
+        type: "normal"
+        amount: 64 # Material amount in menu
+        count: 64 # Buy order count
+        slot: 15
+        name: "&6Sell &e64x &6Amount"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Item Amount: &a%total_amount%x"
+          - "&eClick to proceed!"
+      customamount:
+        type: "custom"
+        amount: 1
+        slot: 17
+        default:
+          material: OAK_SIGN
+          data: 0
+          glow: false
+          name: "&aCustom Amount"
+          lore:
+            - "&8%item_name%"
+            - "&r"
+            - "&7Order up to &a%maximum_amount%x"
+            - "&r"
+            - "&eClick to specify!"
+        invalid:
+          material: REDSTONE_BLOCK
+          data: 0
+          glow: false
+          name: "&aCustom Amount"
+          lore:
+            - "&8%item_name%"
+            - "&r"
+            - "&7Your Input: &c%input%"
+            - "&cError: Invalid amount"
+            - "&r"
+            - "&eClick to fixup!"
+
+  setBuyOrder:
+    title: "&8Buy Order Setup ➜ Item Price"
+    size: 36
+    glass: [1,2,3,4,5,6,7,8,9,10,12,14,16,18,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36]
+    close: 32
+    back: 31
+    items:
+      sameOrder:
+        type: "same"
+        material: GOLD_BLOCK
+        data: 0
+        slot: 11
+        name: "&2Same as Top Order"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Use the same price as the"
+          - "&7highest buy order for this item."
+          - "&r"
+          - "&7Ordering: &a%total_amount%&7x"
+          - "&7Unit Price: &6%unit_price% coins"
+          - "&7Total: &6%total_price% coins"
+          - "&r"
+          - "&aClick to proceed!"
+      topOrder:
+        type: "top"
+        material: GOLD_NUGGET
+        data: 0
+        slot: 13
+        price: 0.1
+        name: "&2Top Order +0.1"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Beat the price of the top"
+          - "&7order so yours is filled first."
+          - "&r"
+          - "&7Ordering: &a%total_amount%&7x"
+          - "&7Unit Price: &6%unit_price% coins"
+          - "&7Total: &6%total_price% coins"
+          - "&r"
+          - "&aClick to proceed!"
+      spread:
+        type: "spread"
+        material: GOLDEN_HORSE_ARMOR
+        data: 0
+        slot: 15
+        spread: 5.0
+        name: "&25% of Spread"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Lowest Sell Price: &6%sell_price% coins"
+          - "&7Highest Buy Price: &6%buy_price% coins"
+          - "&7Spread: &6%buy_price% &7- &6%sell_price% &7= &6%spread_amount% coins"
+          - "&r"
+          - "&7Ordering: &a%total_amount%&7x"
+          - "&7Unit Price: &6%unit_price% coins"
+          - "&7Total: &6%total_price% coins"
+          - "&r"
+          - "&aClick to proceed!"
+      custom:
+        type: "custom"
+        slot: 17
+        default:
+          material: OAK_SIGN
+          data: 0
+          name: "&aCustom Amount"
+          lore:
+            order: "&8- &6%order_price% coins &7each &8| &a%item_amount%&7x from &f%order_amount% &7orders"
+            nothing:
+              - "&8%item_name%"
+              - "&r"
+              - "&7I can't find any buy order for this item."
+              - "&r"
+              - "&eClick to specify!"
+            header:
+              - "&8%item_name%"
+              - "&r"
+              - "&7Set the price per unit"
+              - "&7you are willing to pay."
+              - "&r"
+              - "&7Ordering: &a%total_amount%&7x"
+              - "&r"
+              - "&aTop Orders:"
+            footer:
+              - "&r"
+              - "&eClick to specify!"
+        invalid:
+          material: REDSTONE_BLOCK
+          data: 0
+          name: "&aCustom Amount"
+          lore:
+            - "&8%item_name%"
+            - "&r"
+            - "&7Invalid amount!"
+            - "&r"
+            - "&eClick to fixup!"
+
+  setSellOffer:
+    title: "&8Buy Order Setup ➜ Item Price"
+    size: 36
+    glass: [1,2,3,4,5,6,7,8,9,10,12,14,16,18,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36]
+    close: 32
+    back: 31
+    items:
+      sameOrder:
+        type: "same"
+        material: GOLD_BLOCK
+        data: 0
+        slot: 11
+        name: "&6Same as Best Offer"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Use the same price as the"
+          - "&7lowest sell offer for this item."
+          - "&r"
+          - "&7Selling: &a%total_amount%&7x"
+          - "&7Unit Price: &6%unit_price% coins"
+          - "&7Total: &6%total_price% coins"
+          - "&r"
+          - "&eClick to proceed!"
+      topOrder:
+        type: "top"
+        material: GOLD_NUGGET
+        data: 0
+        slot: 13
+        price: 0.1
+        name: "&6Best Offer -0.1"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Beat the price of the best"
+          - "&7offer so yours is filled first."
+          - "&r"
+          - "&7Selling: &a%total_amount%&7x"
+          - "&7Unit Price: &6%unit_price% coins"
+          - "&7Total: &6%total_price% coins"
+          - "&r"
+          - "&eClick to proceed!"
+      spread:
+        type: "spread"
+        material: GOLDEN_HORSE_ARMOR
+        data: 0
+        slot: 15
+        spread: 10.0
+        name: "&610% of Spread"
+        lore:
+          - "&8%item_name%"
+          - "&r"
+          - "&7Lowest Sell Price: &6%sell_price% coins"
+          - "&7Highest Buy Price: &6%buy_price% coins"
+          - "&7Spread: &6%buy_price% &7- &6%sell_price% &7= &6%spread_amount% coins"
+          - "&r"
+          - "&7Selling: &a%total_amount%&7x"
+          - "&7Unit Price: &6%unit_price% coins"
+          - "&7Total: &6%total_price% coins"
+          - "&r"
+          - "&eClick to proceed!"
+      custom:
+        type: "custom"
+        slot: 17
+        default:
+          material: OAK_SIGN
+          data: 0
+          name: "&aCustom Amount"
+          lore:
+            order: "&8- &6%order_price% coins &7each &8| &a%item_amount%&7x from &f%order_amount% &7offers"
+            nothing:
+              - "&8%item_name%"
+              - "&r"
+              - "&7I can't find any sell offer for this item."
+              - "&r"
+              - "&eClick to specify!"
+            header:
+              - "&8%item_name%"
+              - "&r"
+              - "&7Set the price per unit"
+              - "&7that you want."
+              - "&r"
+              - "&7Selling: &a%total_amount%&7x"
+              - "&r"
+              - "&aTop Offers:"
+            footer:
+              - "&r"
+              - "&eClick to specify!"
+        invalid:
+          material: REDSTONE_BLOCK
+          data: 0
+          name: "&aCustom Amount"
+          lore:
+            - "&8%item_name%"
+            - "&r"
+            - "&7Invalid amount!"
+            - "&r"
+            - "&eClick to fixup!"

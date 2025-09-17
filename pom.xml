@@ -6,12 +6,12 @@
 
     <groupId>me.sedattr.deluxebazaar</groupId>
     <artifactId>DeluxeBazaar</artifactId>
-    <version>9</version>
+    <version>10</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
     </properties>
 
     <build>
@@ -132,6 +132,7 @@
             <groupId>su.nightexpress.coinsengine</groupId>
             <artifactId>CoinsEngine</artifactId>
             <version>2.5.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

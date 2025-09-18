@@ -58,8 +58,6 @@ public class OrderSettingsMenu implements MenuManager {
                     return;
 
                 DeluxeBazaar.getInstance().orderHandler.deleteOrder(player, order);
-                if (DeluxeBazaar.getInstance().redisAddon != null)
-                    DeluxeBazaar.getInstance().redisAddon.deleteOrder(order);
 
                 if (order.getType().equals(OrderType.BUY)) {
                     DeluxeBazaar.getInstance().dataHandler.writeToLog("[PLAYER CANCELLED BUY ORDER] " + player.getName() + " (" + player.getUniqueId() + ") cancelled " + (order.getAmount()) + "x " + name + " buy order. (" + (total * order.getPrice()) + " coins)");

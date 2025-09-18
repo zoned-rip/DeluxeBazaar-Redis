@@ -59,7 +59,6 @@ public class DeluxeBazaar extends JavaPlugin {
     public HeadDatabase headDatabase;
     public boolean placeholderApi = false;
     public DiscordWebhook discordWebhook = null;
-    public RedisAddon redisAddon = null;
     public EcoItemsAddon ecoItemsAddon = null;
     public MMOItemsAddon mmoItemsAddon = null;
     public ExecutableItemsAddon executableItemsAddon = null;

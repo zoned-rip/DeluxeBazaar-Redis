@@ -240,14 +240,6 @@
         </dependency>
 
         <dependency>
-            <groupId>me.sedattr.deluxebazaarredis</groupId>
-            <artifactId>deluxebazaarredis</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libraries/DeluxeBazaarRedis.jar</systemPath>
-        </dependency>
-
-        <dependency>
             <groupId>com.edwardbelt.edprison</groupId>
             <artifactId>EdPrison</artifactId>
             <version>1.0</version>

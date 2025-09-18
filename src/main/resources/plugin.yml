@@ -2,7 +2,7 @@ name: DeluxeBazaar
 main: me.sedattr.deluxebazaar.DeluxeBazaar
 
 author: SedatTR
-version: 10.0
+version: 10.1
 api-version: 1.13
 folia-supported: true
 

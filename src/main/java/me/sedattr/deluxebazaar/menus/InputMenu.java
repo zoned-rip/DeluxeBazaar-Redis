@@ -22,12 +22,14 @@ public class InputMenu {
     }
 
     public void open(Player player, MenuManager menuManager) {
-        if (this.type.equalsIgnoreCase("sign"))
-            signInput(player, menuManager);
-        else if (this.type.equalsIgnoreCase("anvil"))
-            anvilInput(player, menuManager);
-        else
-            chatInput(player, menuManager);
+        TaskUtils.run(() -> {
+            if (this.type.equalsIgnoreCase("sign"))
+                signInput(player, menuManager);
+            else if (this.type.equalsIgnoreCase("anvil"))
+                anvilInput(player, menuManager);
+            else
+                chatInput(player, menuManager);
+        });
     }
 
     private void signInput(Player player, MenuManager menuManager) {
@@ -40,7 +42,7 @@ public class InputMenu {
                         .setLines(lines.get(0), lines.get(1), lines.get(2), lines.get(3))
                         .setHandler((p, entry) -> {
                             String result = entry.getLineWithoutColor(0).trim();
-                            TaskUtils.run(() -> menuManager.inputResult(result));
+                            TaskUtils.runLater(() -> menuManager.inputResult(result), 1L);
 
                             return Collections.emptyList();
                         }).build();
@@ -59,9 +61,13 @@ public class InputMenu {
         try {
             AnvilGUI.Builder builder = new AnvilGUI.Builder()
                     .onClick((slot, state) -> {
-                        String result = state.getText().trim();
+                        if (slot != AnvilGUI.Slot.OUTPUT) {
+                            return Collections.emptyList();
+                        }
 
-                        menuManager.inputResult(result);
+                        String result = state.getText().trim();
+                        TaskUtils.runLater(() -> menuManager.inputResult(result), 1L);
+
                         return Collections.singletonList(AnvilGUI.ResponseAction.close());
                     }).text(Utils.colorize((DeluxeBazaar.getInstance().messagesFile.getString("input_lines.anvil." + textType))))
                     .plugin(DeluxeBazaar.getInstance());

@@ -147,8 +147,6 @@ public class ConfirmMenu {
                 PlayerOrder playerOrder = new PlayerOrder(player, UUID.randomUUID(), bazaarItem, OrderType.BUY, unitPrice, amount);
                 DeluxeBazaar.getInstance().orderHandler.createOrder(player, playerOrder);
 
-                if (DeluxeBazaar.getInstance().redisAddon != null)
-                    DeluxeBazaar.getInstance().redisAddon.createOrder(playerOrder);
                 Utils.sendMessage(player, "setup_buy_order", placeholderUtil);
 
                 DeluxeBazaar.getInstance().dataHandler.writeToLog("[PLAYER CREATED BUY ORDER] " + player.getName() + " (" + player.getUniqueId() + ") setup " + (amount) + "x " + name + " buy order for " + (unitPrice * amount) + " coins.");
@@ -244,9 +242,6 @@ public class ConfirmMenu {
                 player.closeInventory();
                 PlayerOrder playerOrder = new PlayerOrder(player, UUID.randomUUID(), bazaarItem, OrderType.SELL, unitPrice, amount);
                 DeluxeBazaar.getInstance().orderHandler.createOrder(player, playerOrder);
-
-                if (DeluxeBazaar.getInstance().redisAddon != null)
-                    DeluxeBazaar.getInstance().redisAddon.createOrder(playerOrder);
 
                 Utils.sendMessage(player, "setup_sell_offer", placeholderUtil);
 

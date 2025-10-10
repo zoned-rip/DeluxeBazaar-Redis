@@ -247,10 +247,6 @@ public class SubcategoryMenu {
 
             ConfigurationSection subcategorySection = DeluxeBazaar.getInstance().itemsFile.getConfigurationSection("groups." + args[0]);
             if (subcategorySection == null) {
-                ConfigurationSection itemSection = DeluxeBazaar.getInstance().itemsFile.getConfigurationSection("items." + args[0]);
-                if (itemSection == null)
-                    continue;
-
                 BazaarItem bazaarItem = DeluxeBazaar.getInstance().bazaarItems.get(args[0]);
                 if (bazaarItem == null)
                     continue;
@@ -263,7 +259,9 @@ public class SubcategoryMenu {
 
                 double buyPrice = BazaarItemHook.getBuyPrice(player, args[0], 1);
                 double sellPrice = BazaarItemHook.getSellPrice(player, args[0], 1);
-                List<String> details = itemSection.getStringList("details");
+
+                ConfigurationSection itemSection = DeluxeBazaar.getInstance().itemsFile.getConfigurationSection("items." + args[0]);
+                List<String> details = itemSection != null ? itemSection.getStringList("details") : List.of();
 
                 PlaceholderUtil placeholderUtil = new PlaceholderUtil()
                         .addPlaceholder("%item_buy_price%", buyStock ?
@@ -275,7 +273,6 @@ public class SubcategoryMenu {
                         .addPlaceholder("%item_buy_amount%", String.valueOf(BazaarItemHook.getBuyCount(args[0])))
                         .addPlaceholder("%item_sell_amount%", String.valueOf(BazaarItemHook.getSellCount(args[0])))
                         .addPlaceholder("%product_amount%", String.valueOf(productCount));
-
 
                 boolean disableLore = DeluxeBazaar.getInstance().configFile.getBoolean("settings.disable_price_lore", true);
                 for (String string : DeluxeBazaar.getInstance().messagesFile.getStringList("lores.item." + mode)) {

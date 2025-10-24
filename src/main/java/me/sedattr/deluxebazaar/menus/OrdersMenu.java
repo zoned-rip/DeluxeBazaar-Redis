@@ -1,11 +1,14 @@
 package me.sedattr.deluxebazaar.menus;
 
 import me.sedattr.deluxebazaar.DeluxeBazaar;
+import me.sedattr.deluxebazaar.database.MySQLDatabase;
+import me.sedattr.deluxebazaar.database.RedisDatabase;
 import me.sedattr.deluxebazaar.inventoryapi.HInventory;
 import me.sedattr.deluxebazaar.inventoryapi.item.ClickableItem;
 import me.sedattr.deluxebazaar.managers.OrderType;
 import me.sedattr.deluxebazaar.managers.PlayerBazaar;
 import me.sedattr.deluxebazaar.managers.PlayerOrder;
+import me.sedattr.deluxebazaar.others.Logger;
 import me.sedattr.deluxebazaar.others.PlaceholderUtil;
 import me.sedattr.deluxebazaar.others.Utils;
 import org.bukkit.configuration.ConfigurationSection;
@@ -73,8 +76,17 @@ public class OrdersMenu {
     }
 
     public void openMenu(int page) {
+        openMenu(page, true);
+    }
+
+    public void openMenu(int page, boolean reloadFromRedis) {
         if (this.section == null)
             return;
+
+        if (reloadFromRedis && DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
+            RedisDatabase redisDb = (RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
+            redisDb.loadPlayerFromRedis(player.getUniqueId());
+        }
 
         PlayerBazaar playerBazaar = DeluxeBazaar.getInstance().players.getOrDefault(player.getUniqueId(), new PlayerBazaar(player));
 
@@ -132,6 +144,8 @@ public class OrdersMenu {
 
                 gui.setItem(slots.get(i) - 1, ClickableItem.of(itemStack, (event -> {
                     int left = playerOrder.getFilled() - playerOrder.getCollected();
+                    Logger.sendConsoleMessage("§e[DEBUG] OrdersMenu claim: filled=" + playerOrder.getFilled() + ", collected=" + playerOrder.getCollected() + ", left=" + left, Logger.LogLevel.INFO);
+
                     if (left <= 0) {
                         new OrderSettingsMenu(player).openMenu(playerOrder);
                         return;
@@ -151,18 +165,31 @@ public class OrdersMenu {
 
                         DeluxeBazaar.getInstance().itemHandler.giveBazaarItems(player, bazaarItem.get().clone(), left);
                     } else if (!DeluxeBazaar.getInstance().economyManager.addBalance(player, price)) {
-                            new OrderSettingsMenu(player).openMenu(playerOrder);
-                            return;
-                        }
+                        new OrderSettingsMenu(player).openMenu(playerOrder);
+                        return;
+                    }
 
                     int total = playerOrder.getCollected() + left;
-                    if (total < playerOrder.getAmount())
-                        playerOrder.setCollected(total);
-                    else {
+                    Logger.sendConsoleMessage("§e[DEBUG] OrdersMenu claim: total=" + total + ", amount=" + playerOrder.getAmount(), Logger.LogLevel.INFO);
+
+                    playerOrder.setCollected(total);
+
+                    if (total >= playerOrder.getAmount()) {
+                        Logger.sendConsoleMessage("§e[DEBUG] OrdersMenu claim: Removing fully collected order", Logger.LogLevel.INFO);
                         if (type.equals(OrderType.BUY))
                             playerBazaar.getBuyOrders().remove(playerOrder);
                         else
                             playerBazaar.getSellOffers().remove(playerOrder);
+                    }
+
+                    if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
+                        MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
+                        mysqlDb.savePlayer(player.getUniqueId(), playerBazaar);
+                        Logger.sendConsoleMessage("§e[DEBUG] OrdersMenu claim: Saved to MySQL (sync)", Logger.LogLevel.INFO);
+                    } else if (DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
+                        RedisDatabase redisDb = (RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
+                        redisDb.savePlayer(player.getUniqueId(), playerBazaar);
+                        Logger.sendConsoleMessage("§e[DEBUG] OrdersMenu claim: Saved to Redis (sync), buyOrders=" + playerBazaar.getBuyOrders().size() + ", sellOffers=" + playerBazaar.getSellOffers().size(), Logger.LogLevel.INFO);
                     }
 
                     Utils.sendMessage(player, playerOrder.getType().equals(OrderType.BUY) ? "claimed_buy_order" : "claimed_sell_offer", new PlaceholderUtil()
@@ -172,7 +199,9 @@ public class OrdersMenu {
                             .addPlaceholder("%item_name_colored%", Utils.colorize(itemSection.getString("name")))
                             .addPlaceholder("%unit_price%", DeluxeBazaar.getInstance().numberFormat.format(playerOrder.getPrice())));
 
-                    openMenu(page);
+                    DeluxeBazaar.getInstance().getServer().getScheduler().runTaskLater(DeluxeBazaar.getInstance(), () -> {
+                        openMenu(page);
+                    }, 5L);
                 })));
 
                 i++;

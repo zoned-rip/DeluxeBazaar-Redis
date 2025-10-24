@@ -4,6 +4,8 @@ import me.sedattr.deluxebazaar.DeluxeBazaar;
 import me.sedattr.bazaarapi.BazaarItemHook;
 import me.sedattr.bazaarapi.events.BazaarItemBuyEvent;
 import me.sedattr.bazaarapi.events.BazaarItemSellEvent;
+import me.sedattr.deluxebazaar.database.MySQLDatabase;
+import me.sedattr.deluxebazaar.database.RedisDatabase;
 import me.sedattr.deluxebazaar.managers.BazaarItem;
 import me.sedattr.deluxebazaar.others.PlaceholderUtil;
 import me.sedattr.deluxebazaar.others.Utils;
@@ -111,13 +113,21 @@ public class EconomyHandler {
         Utils.executeCommands(player, item.getName(), "itemCommands.buy");
         Utils.playSound(player, "bought_item");
 
+        if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
+            MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
+            mysqlDb.saveItemPriceAsync(item.getName(), item);
+        } else if (DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
+            RedisDatabase redisDb = (RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
+            redisDb.saveItemPriceAsync(item.getName(), item);
+        }
+
         DeluxeBazaar.getInstance().dataHandler.writeToLog("[PLAYER BOUGHT ITEM] " + player.getName() + " (" + player.getUniqueId() + ") bought " + (amount) + "x " + item.getName() + " for total " + (price) + " coins.");
         if (sendMessages) {
             Utils.sendMessage(player, "bought", placeholderUtil);
             if (DeluxeBazaar.getInstance().discordWebhook != null)
                 DeluxeBazaar.getInstance().discordWebhook.sendMessage("bought_item", placeholderUtil
-                .addPlaceholder("%player_name%", player.getName())
-                .addPlaceholder("%player_displayname%", player.getDisplayName()));
+                        .addPlaceholder("%player_name%", player.getName())
+                        .addPlaceholder("%player_displayname%", player.getDisplayName()));
         }
 
         DeluxeBazaar.getInstance().itemHandler.updateBazaarItem(player, item.getName());
@@ -190,6 +200,14 @@ public class EconomyHandler {
         item.addSellCount(count);
         Utils.executeCommands(player, item.getName(), "itemCommands.sell");
         Utils.playSound(player, "sold_item");
+
+        if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
+            MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
+            mysqlDb.saveItemPriceAsync(item.getName(), item);
+        } else if (DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
+            RedisDatabase redisDb = (RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
+            redisDb.saveItemPriceAsync(item.getName(), item);
+        }
 
         if (sendMessages) {
             DeluxeBazaar.getInstance().dataHandler.writeToLog("[PLAYER SOLD ITEM] " + player.getName() + " (" + player.getUniqueId() + ") sold " + (count) + "x " + item.getName() + " for total " + (price) + " coins.");

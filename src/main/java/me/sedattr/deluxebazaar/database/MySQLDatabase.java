@@ -2,6 +2,7 @@ package me.sedattr.deluxebazaar.database;
 
 import me.sedattr.deluxebazaar.DeluxeBazaar;
 import me.sedattr.deluxebazaar.managers.*;
+import me.sedattr.deluxebazaar.others.TaskUtils;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.sql.*;
@@ -84,6 +85,39 @@ public class MySQLDatabase implements DatabaseManager {
         }
 
         return null;
+    }
+
+    /**
+     * Saves a single player's data asynchronously if auto_save.player_orders is enabled
+     * Used for cross-server synchronization
+     */
+    public void savePlayerAsync(UUID uuid, PlayerBazaar playerBazaar) {
+        if (!DeluxeBazaar.getInstance().configFile.getBoolean("database.auto_save.player_orders", false))
+            return;
+
+        TaskUtils.runAsync(() -> savePlayer(uuid, playerBazaar));
+    }
+
+    /**
+     * Saves a single item's data asynchronously if auto_save.item_orders is enabled
+     * Used for cross-server synchronization
+     */
+    public void saveItemAsync(String name, BazaarItem bazaarItem) {
+        if (!DeluxeBazaar.getInstance().configFile.getBoolean("database.auto_save.item_orders", false))
+            return;
+
+        TaskUtils.runAsync(() -> saveItem(name, bazaarItem));
+    }
+
+    /**
+     * Saves a single item's price data asynchronously if auto_save.item_prices is enabled
+     * Used for cross-server synchronization
+     */
+    public void saveItemPriceAsync(String name, BazaarItem bazaarItem) {
+        if (!DeluxeBazaar.getInstance().configFile.getBoolean("database.auto_save.item_prices", false))
+            return;
+
+        TaskUtils.runAsync(() -> saveItem(name, bazaarItem));
     }
 
     public void savePlayer(UUID uuid, PlayerBazaar playerBazaar) {

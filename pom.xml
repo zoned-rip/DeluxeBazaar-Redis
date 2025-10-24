@@ -143,6 +143,13 @@
         </dependency>
 
         <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-api</artifactId>
+            <version>4.17.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.11.6</version>
@@ -195,6 +202,12 @@
         </dependency>
 
         <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.angeschossen</groupId>
             <artifactId>LandsAPI</artifactId>
             <version>7.10.13</version>
@@ -215,44 +228,29 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- Optional system dependencies - uncomment and place JARs in libraries/ folder if needed -->
         <dependency>
             <groupId>com.willfp</groupId>
             <artifactId>libreforge</artifactId>
-            <version>4.73.0</version>
+            <version>4.76.1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libraries/libreforge.jar</systemPath>
+            <systemPath>${project.basedir}/libraries/libreforge-4.76.1-shadow.jar</systemPath>
         </dependency>
 
         <dependency>
             <groupId>com.ssomar.score</groupId>
             <artifactId>SCore</artifactId>
-            <version>4.24.1.15</version>
+            <version>5.25.10.21</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libraries/SCore.jar</systemPath>
+            <systemPath>${project.basedir}/libraries/SCore-5.25.10.21.jar</systemPath>
         </dependency>
 
         <dependency>
             <groupId>org.black_ixx.playerpoints</groupId>
             <artifactId>playerpoints</artifactId>
-            <version>1.0</version>
+            <version>3.3.3</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libraries/PlayerPoints.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>com.edwardbelt.edprison</groupId>
-            <artifactId>EdPrison</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libraries/EdPrison.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>me.realized</groupId>
-            <artifactId>tokenmanager</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/libraries/TokenManager.jar</systemPath>
+            <systemPath>${project.basedir}/libraries/PlayerPoints-3.3.3.jar</systemPath>
         </dependency>
 
         <dependency>
@@ -262,6 +260,8 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/libraries/RoyaleEconomy.jar</systemPath>
         </dependency>
+        <!-- End optional system dependencies -->
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

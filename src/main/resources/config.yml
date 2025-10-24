@@ -40,11 +40,9 @@ settings:
 
 # PLUGIN ECONOMY
 economy:
-  type: "vault" # Types: vault, royaleeconomy_balance, royaleeconomy_bank, lands, tokenmanager, playerpoints, yaml, ultraeconomy, edprison
+  type: "vault" # Types: vault, royaleeconomy_balance, royaleeconomy_bank, lands, playerpoints, yaml, ultraeconomy, coinsengine
   coinsengine_settings:
     currency_name: "coins"
-  edprison_settings:
-    currency_name: "tokens"
   yaml_settings: # For yaml economy, ignore if you use any of the other economy-types
     folder_name: "plugins/YAMLEconomy/players" # economy folder that includes players' balance files
     file_name: "%player_uuid%.yml" # player's balance file name in folder (placeholders: %uuid% & %player%)
@@ -58,11 +56,20 @@ economy:
 
 # PLUGIN DATABASE
 database:
-  type: "yaml" # Types: mysql, sqlite, yaml
+  type: "yaml" # Types: redis, mysql, sqlite, yaml
   auto_save:
     player_orders: false # When player orders are changed, should plugin save directly?
     item_orders: false # When item orders are changed, should plugin save directly?
     item_prices: false # When item prices are changed, should plugin save directly?
+  # Cross-server sync settings (only works with MySQL, not needed for Redis)
+  sync_interval: 30 # Seconds between syncing data from database (0 to disable, recommended: 30-60)
+  redis_settings: # For Redis database (real-time pub/sub sync)
+    host: "localhost"
+    port: 6379
+    password: "" # Leave empty if no password
+    database: 0 # Redis database number (0-15)
+    channel_prefix: "deluxebazaar:" # Prefix for pub/sub channels
+    use_ssl: false # Enable SSL/TLS for secure connections (required for Upstash, AWS ElastiCache with encryption)
   mysql_settings: # For mysql dataabase
     link: "com.mysql.jdbc.Driver" # new version: com.mysql.cj.jdbc.Driver
     url: "jdbc:mysql://localhost:1907/Bazaar" # jdbc:mysql://host:port/database
@@ -124,6 +131,7 @@ permissions:
     sell: "bazaaradmin.sell"
     sell_all: "bazaaradmin.sell_all"
     create_item: "bazaaradmin.create_item"
+    clearorders: "bazaaradmin.clearorders"
     reload: "bazaaradmin.reload"
 
 # Number format settings
@@ -253,7 +261,7 @@ buy_order:
 # SELL OFFER SETTINGS
 sell_offer:
   limit_price_change: true # When enabled, the price of a given item cannot change more than by a certain % each price-update cycle. Set to false to disable limitation-system entirely
-#  maximum_price_change: 10.0 # Factor in % relative to current-price an item can change each price-update cycle
+  #  maximum_price_change: 10.0 # Factor in % relative to current-price an item can change each price-update cycle
   maximum_item_amount: 1600 # How many items can players with the default permissions sell per sell-order.
   maximum_offer_amount: 10 # How many sell-orders a player with default permissions can have simultaneously
   required_offer_amount: 1 # The minimum amount of items a player must buy per buy-order. Set to minimum 1 but feel free to increase if wanted.

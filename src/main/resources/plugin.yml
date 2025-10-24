@@ -16,7 +16,6 @@ softdepend:
   - RoyaleEconomy
   - PlaceholderAPI
   - PlayerPoints
-  - TokenManager
   - Lands
   - EcoBits
   - ExecutableItems
@@ -25,7 +24,6 @@ softdepend:
   - libreforge
   - eco
   - DeluxeBazaarRedis
-  - EdPrison
   - CMI
 
 commands:

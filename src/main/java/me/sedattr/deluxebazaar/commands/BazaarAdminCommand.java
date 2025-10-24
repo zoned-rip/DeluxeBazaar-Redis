@@ -29,11 +29,17 @@ public class BazaarAdminCommand implements CommandExecutor, TabCompleter {
         if (!Utils.checkPermission(commandSender, "admin_commands", "command"))
             return null;
 
-        ArrayList<String> complete = new ArrayList<>(Arrays.asList("reload", "buy", "sell", "menu", "createitem", "sellall"));
+        ArrayList<String> complete = new ArrayList<>(Arrays.asList("reload", "buy", "sell", "menu", "createitem", "sellall", "clearorders"));
         complete.removeIf(type -> !Utils.checkPermission(commandSender, "admin_commands", type));
 
         if (args.length == 1)
             return complete;
+
+        // Tab complete item names for clearorders command
+        if (args.length == 2 && args[0].equalsIgnoreCase("clearorders")) {
+            return new ArrayList<>(DeluxeBazaar.getInstance().bazaarItems.keySet());
+        }
+
         return null;
     }
 
@@ -65,6 +71,9 @@ public class BazaarAdminCommand implements CommandExecutor, TabCompleter {
 
                     DeluxeBazaar.getInstance().reloadConfig();
                     DeluxeBazaar.getInstance().dataHandler.load();
+
+                    // Load database to restore prices, orders, and player data
+                    DeluxeBazaar.getInstance().databaseManager.loadDatabase();
 
                     Utils.sendMessage(commandSender, "reloaded", new PlaceholderUtil()
                             .addPlaceholder("%reload_time%", String.valueOf(System.currentTimeMillis() - start2)));
@@ -238,6 +247,46 @@ public class BazaarAdminCommand implements CommandExecutor, TabCompleter {
                     }
 
                     return DeluxeBazaar.getInstance().economyHandler.event(target, args[0].toLowerCase(), itemName, count);
+
+                case "clearorders":
+                    if (!Utils.checkPermission(commandSender, "admin_commands", "clearorders")) {
+                        Utils.sendMessage(commandSender, "no_permission");
+                        return false;
+                    }
+
+                    if (args.length < 2) {
+                        Utils.sendMessage(commandSender, "admin_clearorders_usage", placeholderUtil);
+                        return false;
+                    }
+
+                    BazaarItem clearItem = BazaarItemHook.getBazaarItem(args[1]);
+                    if (clearItem == null) {
+                        Utils.sendMessage(commandSender, "wrong_item", placeholderUtil
+                                .addPlaceholder("%item_name%", args[1]));
+                        return false;
+                    }
+
+                    int buyOrdersCleared = clearItem.getBuyPrices().size();
+                    clearItem.getBuyPrices().clear();
+
+                    int sellOrdersCleared = clearItem.getSellPrices().size();
+                    clearItem.getSellPrices().clear();
+
+                    if (DeluxeBazaar.getInstance().databaseManager instanceof me.sedattr.deluxebazaar.database.RedisDatabase) {
+                        me.sedattr.deluxebazaar.database.RedisDatabase redisDb =
+                                (me.sedattr.deluxebazaar.database.RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
+                        redisDb.saveItemAsync(args[1], clearItem);
+                    } else if (DeluxeBazaar.getInstance().databaseManager instanceof me.sedattr.deluxebazaar.database.MySQLDatabase) {
+                        me.sedattr.deluxebazaar.database.MySQLDatabase mysqlDb =
+                                (me.sedattr.deluxebazaar.database.MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
+                        mysqlDb.saveItemAsync(args[1], clearItem);
+                    }
+
+                    Utils.sendMessage(commandSender, "cleared_orders", new PlaceholderUtil()
+                            .addPlaceholder("%item_name%", clearItem.getName())
+                            .addPlaceholder("%buy_orders%", String.valueOf(buyOrdersCleared))
+                            .addPlaceholder("%sell_orders%", String.valueOf(sellOrdersCleared)));
+                    return true;
             }
         }
 

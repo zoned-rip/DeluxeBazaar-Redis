@@ -38,4 +38,12 @@ public final class TaskUtils {
             Bukkit.getScheduler().runTaskTimer(DeluxeBazaar.getInstance(), runnable, delayTicks, periodTicks);
         }
     }
+
+    public static void runAsync(Runnable runnable) {
+        if (isFolia) {
+            DeluxeBazaar.getInstance().getServer().getAsyncScheduler().runNow(DeluxeBazaar.getInstance(), task -> runnable.run());
+        } else {
+            Bukkit.getScheduler().runTaskAsynchronously(DeluxeBazaar.getInstance(), runnable);
+        }
+    }
 }

@@ -2,6 +2,8 @@ package me.sedattr.deluxebazaar.handlers;
 
 import me.sedattr.deluxebazaar.DeluxeBazaar;
 import me.sedattr.bazaarapi.BazaarItemHook;
+import me.sedattr.deluxebazaar.database.MySQLDatabase;
+import me.sedattr.deluxebazaar.database.RedisDatabase;
 import me.sedattr.deluxebazaar.managers.*;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,7 +18,6 @@ public class OrderHandler {
 
         List<OrderPrice> prices = type.equals(OrderType.BUY) ? bazaarItem.getBuyPrices() : bazaarItem.getSellPrices();
 
-        // finding order price with unit price
         OrderPrice orderPrice = getOrderPrice(prices, order.getPrice());
         if (orderPrice != null) {
             int leftAmount = order.getAmount() - order.getFilled();
@@ -30,12 +31,21 @@ public class OrderHandler {
             orderPrice.setOrderAmount(orderPrice.getOrderAmount()-1);
         }
 
-        // removing order from player's orders
         PlayerBazaar playerBazaar = DeluxeBazaar.getInstance().players.getOrDefault(player.getUniqueId(), new PlayerBazaar(player));
         if (type.equals(OrderType.BUY))
             playerBazaar.getBuyOrders().remove(order);
         else
             playerBazaar.getSellOffers().remove(order);
+
+        if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
+            MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
+            mysqlDb.savePlayerAsync(player.getUniqueId(), playerBazaar);
+            mysqlDb.saveItemAsync(bazaarItem.getName(), bazaarItem);
+        } else if (DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
+            RedisDatabase redisDb = (RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
+            redisDb.savePlayerAsync(player.getUniqueId(), playerBazaar);
+            redisDb.saveItemAsync(bazaarItem.getName(), bazaarItem);
+        }
     }
 
     public void createOrder(OfflinePlayer player, PlayerOrder playerOrder) {
@@ -56,17 +66,25 @@ public class OrderHandler {
         playerOrders.add(playerOrder);
         orderPrice.getPlayers().put(player.getUniqueId(), playerOrders);
 
-        // adding order to player's orders
         PlayerBazaar playerBazaar = DeluxeBazaar.getInstance().players.getOrDefault(player.getUniqueId(), new PlayerBazaar(player));
         if (playerOrder.getType().equals(OrderType.BUY))
             playerBazaar.getBuyOrders().add(playerOrder);
         else
             playerBazaar.getSellOffers().add(playerOrder);
+
+        if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
+            MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
+            mysqlDb.savePlayerAsync(player.getUniqueId(), playerBazaar);
+            mysqlDb.saveItemAsync(playerOrder.getItem().getName(), playerOrder.getItem());
+        } else if (DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
+            RedisDatabase redisDb = (RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
+            redisDb.savePlayerAsync(player.getUniqueId(), playerBazaar);
+            redisDb.saveItemAsync(playerOrder.getItem().getName(), playerOrder.getItem());
+        }
     }
 
     /*
     public PlayerOrder createOrder(OfflinePlayer player, BazaarItem bazaarItem, OrderType type, double unitPrice, int amount) {
-        // creating new order
         PlayerOrder playerOrder = new PlayerOrder(player, bazaarItem, type, unitPrice, amount);
 
         List<OrderPrice> prices = type == OrderType.BUY ? bazaarItem.getBuyPrices() : bazaarItem.getSellPrices();
@@ -86,7 +104,6 @@ public class OrderHandler {
         playerOrders.add(playerOrder);
         orderPrice.getPlayers().put(player.getUniqueId(), playerOrders);
 
-        // adding order to player's orders
         PlayerBazaar playerBazaar = DeluxeBazaar.getInstance().players.getOrDefault(player.getUniqueId(), new PlayerBazaar(player));
         if (type == OrderType.BUY)
             playerBazaar.getBuyOrders().add(playerOrder);

@@ -34,6 +34,7 @@ admin_usage:
   - "&8- &c/%command_name% sell [player] [item] [count]: &fSells item for player."
   - "&8- &c/%command_name% sellall (player): &fSells all items for player."
   - "&8- &c/%command_name% createitem [name] [category]: &fAutomatically creates item in your hand and add to files."
+  - "&8- &c/%command_name% clearorders [item]: &fClears all buy and sell orders for an item."
   - "&8- &c/%command_name% reload: &fReloads plugin."
 console_usage: "&8- &c/bazaaradmin reload: &7Reloads plugin settings & items."
 buy_usage: "&aCorrect Usage: &f/%command_name% buy [item] [amount]"
@@ -42,6 +43,7 @@ admin_sell_all_usage: "&cCorrect Usage: &7/%command_name% sellall [player]"
 admin_menu_usage: "&cCorrect Usage: &7/%command_name% menu [player] (category)"
 admin_buy_usage: "&cCorrect Usage: &7/%command_name% buy [player] [item] [amount]"
 admin_sell_usage: "&cCorrect Usage: &7/%command_name% sell [player] [item] [amount]"
+admin_clearorders_usage: "&cCorrect Usage: &7/%command_name% clearorders [item]"
 create_item_usage: "&cCorrect Usage: &7/%command_name% createitem [name] [category]"
 
 not_enough_money: "&8[&cBazaar&8] &7You need more &6%required_money% coins&7!"
@@ -87,6 +89,11 @@ created_item:
   - "&r"
   - "&8[&aBazaar&8] &7Item created with the name &f%item_name% &7for category &f%category_name%&7!"
   - "&8[&eBazaar&8] &7You need to edit item's other settings in created_items.yml file."
+cleared_orders:
+  - "&r"
+  - "&8[&aBazaar&8] &7Cleared all orders for &f%item_name%&7!"
+  - "&8[&aBazaar&8] &7Buy orders cleared: &a%buy_orders%"
+  - "&8[&aBazaar&8] &7Sell orders cleared: &e%sell_orders%"
 bought:
   - "&r"
   - "&8[&aBazaar&8] &7Executing &ainstant buy &7for &a%total_amount%x &f%item_name_colored%&7..."

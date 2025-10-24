@@ -108,16 +108,24 @@ public class RedisDatabase implements DatabaseManager {
 
     private void handleRedisMessage(String channel, String message) {
         try {
-            Logger.sendConsoleMessage("§e[DEBUG] handleRedisMessage: Received on channel=" + channel + ", message=" + message, Logger.LogLevel.INFO);
+            boolean enableLog = DeluxeBazaar.getInstance().configFile.getBoolean("settings.enable_log", false);
+            
+            if (enableLog) {
+                Logger.sendConsoleMessage("§e[DEBUG] handleRedisMessage: Received on channel=" + channel + ", message=" + message, Logger.LogLevel.INFO);
+            }
 
             if (message != null && message.equals(serverId)) {
-                Logger.sendConsoleMessage("§e[DEBUG] handleRedisMessage: Ignoring own server's update (serverId=" + serverId + ")", Logger.LogLevel.INFO);
+                if (enableLog) {
+                    Logger.sendConsoleMessage("§e[DEBUG] handleRedisMessage: Ignoring own server's update (serverId=" + serverId + ")", Logger.LogLevel.INFO);
+                }
                 return;
             }
 
             String updateKey = channel.substring(channelPrefix.length());
             if (recentLocalUpdates.contains(updateKey)) {
-                Logger.sendConsoleMessage("§e[DEBUG] handleRedisMessage: Ignoring recent local update (key=" + updateKey + ")", Logger.LogLevel.INFO);
+                if (enableLog) {
+                    Logger.sendConsoleMessage("§e[DEBUG] handleRedisMessage: Ignoring recent local update (key=" + updateKey + ")", Logger.LogLevel.INFO);
+                }
                 recentLocalUpdates.remove(updateKey);
                 return;
             }
@@ -125,19 +133,27 @@ public class RedisDatabase implements DatabaseManager {
             if (channel.startsWith(channelPrefix + "player:")) {
                 String uuidStr = channel.substring((channelPrefix + "player:").length());
                 UUID uuid = UUID.fromString(uuidStr);
-                Logger.sendConsoleMessage("§e[DEBUG] handleRedisMessage: Loading player " + uuid, Logger.LogLevel.INFO);
+                if (enableLog) {
+                    Logger.sendConsoleMessage("§e[DEBUG] handleRedisMessage: Loading player " + uuid, Logger.LogLevel.INFO);
+                }
                 loadPlayerFromRedis(uuid);
 
                 PlayerBazaar playerBazaar = DeluxeBazaar.getInstance().players.get(uuid);
                 if (playerBazaar != null) {
-                    Logger.sendConsoleMessage("§e[DEBUG] handleRedisMessage: Rebuilding mappings for player", Logger.LogLevel.INFO);
+                    if (enableLog) {
+                        Logger.sendConsoleMessage("§e[DEBUG] handleRedisMessage: Rebuilding mappings for player", Logger.LogLevel.INFO);
+                    }
                     rebuildPlayerOrderMappings(uuid, playerBazaar);
                     refreshPlayerOrdersMenu(uuid);
                 } else {
-                    Logger.sendConsoleMessage("§c[DEBUG] handleRedisMessage: PlayerBazaar is NULL after load!", Logger.LogLevel.WARN);
+                    if (enableLog) {
+                        Logger.sendConsoleMessage("§c[DEBUG] handleRedisMessage: PlayerBazaar is NULL after load!", Logger.LogLevel.WARN);
+                    }
                 }
 
-                Logger.sendConsoleMessage("§a[DEBUG] handleRedisMessage: Completed player data load", Logger.LogLevel.INFO);
+                if (enableLog) {
+                    Logger.sendConsoleMessage("§a[DEBUG] handleRedisMessage: Completed player data load", Logger.LogLevel.INFO);
+                }
             } else if (channel.startsWith(channelPrefix + "item:")) {
                 String itemName = channel.substring((channelPrefix + "item:").length());
                 loadItemFromRedis(itemName);
@@ -190,7 +206,10 @@ public class RedisDatabase implements DatabaseManager {
     public void savePlayer(UUID uuid, PlayerBazaar playerBazaar) {
         if (!connected) return;
 
-        Logger.sendConsoleMessage("§e[DEBUG] savePlayer: Called for UUID=" + uuid + ", buyOrders=" + playerBazaar.getBuyOrders().size() + ", sellOffers=" + playerBazaar.getSellOffers().size(), Logger.LogLevel.INFO);
+        boolean enableLog = DeluxeBazaar.getInstance().configFile.getBoolean("settings.enable_log", false);
+        if (enableLog) {
+            Logger.sendConsoleMessage("§e[DEBUG] savePlayer: Called for UUID=" + uuid + ", buyOrders=" + playerBazaar.getBuyOrders().size() + ", sellOffers=" + playerBazaar.getSellOffers().size(), Logger.LogLevel.INFO);
+        }
 
         try (Jedis jedis = jedisPool.getResource()) {
             String key = "bazaar:player:" + uuid.toString();
@@ -210,7 +229,9 @@ public class RedisDatabase implements DatabaseManager {
                         .append(order.getCollected()).append(",")
                         .append(order.getFilled()).append(",")
                         .append(order.getAmount());
-                Logger.sendConsoleMessage("§e[DEBUG] savePlayer: Buy order - filled=" + order.getFilled() + "/" + order.getAmount() + ", price=" + order.getPrice(), Logger.LogLevel.INFO);
+                if (enableLog) {
+                    Logger.sendConsoleMessage("§e[DEBUG] savePlayer: Buy order - filled=" + order.getFilled() + "/" + order.getAmount() + ", price=" + order.getPrice(), Logger.LogLevel.INFO);
+                }
             }
             data.put("buy_orders", buyOrders.toString());
 
@@ -225,18 +246,24 @@ public class RedisDatabase implements DatabaseManager {
                         .append(order.getCollected()).append(",")
                         .append(order.getFilled()).append(",")
                         .append(order.getAmount());
-                Logger.sendConsoleMessage("§e[DEBUG] savePlayer: Sell offer - filled=" + order.getFilled() + "/" + order.getAmount() + ", price=" + order.getPrice(), Logger.LogLevel.INFO);
+                if (enableLog) {
+                    Logger.sendConsoleMessage("§e[DEBUG] savePlayer: Sell offer - filled=" + order.getFilled() + "/" + order.getAmount() + ", price=" + order.getPrice(), Logger.LogLevel.INFO);
+                }
             }
             data.put("sell_offers", sellOffers.toString());
 
             jedis.hset(key, data);
-            Logger.sendConsoleMessage("§e[DEBUG] savePlayer: Saved to Redis key=" + key, Logger.LogLevel.INFO);
+            if (enableLog) {
+                Logger.sendConsoleMessage("§e[DEBUG] savePlayer: Saved to Redis key=" + key, Logger.LogLevel.INFO);
+            }
 
             String updateKey = "player:" + uuid.toString();
             recentLocalUpdates.add(updateKey);
 
             long subscribers = jedis.publish(channelPrefix + updateKey, serverId);
-            Logger.sendConsoleMessage("§e[DEBUG] savePlayer: Published update to " + subscribers + " subscribers (serverId=" + serverId + ")", Logger.LogLevel.INFO);
+            if (enableLog) {
+                Logger.sendConsoleMessage("§e[DEBUG] savePlayer: Published update to " + subscribers + " subscribers (serverId=" + serverId + ")", Logger.LogLevel.INFO);
+            }
 
             if (DeluxeBazaar.getInstance().isEnabled()) {
                 TaskUtils.runAsync(() -> {
@@ -430,7 +457,11 @@ public class RedisDatabase implements DatabaseManager {
                 UUID uuid = UUID.fromString(uuidStr);
 
                 Map<String, String> data = jedis.hgetAll(key);
-                Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Loaded data from Redis, has data=" + !data.isEmpty(), Logger.LogLevel.INFO);
+                boolean enableLog = DeluxeBazaar.getInstance().configFile.getBoolean("settings.enable_log", false);
+                
+                if (enableLog) {
+                    Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Loaded data from Redis, has data=" + !data.isEmpty(), Logger.LogLevel.INFO);
+                }
 
                 PlayerBazaar playerBazaar = DeluxeBazaar.getInstance().players.getOrDefault(uuid, new PlayerBazaar(uuid));
 
@@ -441,11 +472,15 @@ public class RedisDatabase implements DatabaseManager {
                 if (category != null && !category.isEmpty()) playerBazaar.setCategory(category);
 
                 String buyOrdersStr = data.get("buy_orders");
-                Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: buyOrdersStr length=" + (buyOrdersStr != null ? buyOrdersStr.length() : 0), Logger.LogLevel.INFO);
+                if (enableLog) {
+                    Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: buyOrdersStr length=" + (buyOrdersStr != null ? buyOrdersStr.length() : 0), Logger.LogLevel.INFO);
+                }
                 if (buyOrdersStr != null && !buyOrdersStr.isEmpty()) {
                     List<PlayerOrder> buyOrders = new ArrayList<>();
                     String[] ordersArray = buyOrdersStr.split(",,");
-                    Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Processing " + ordersArray.length + " buy orders", Logger.LogLevel.INFO);
+                    if (enableLog) {
+                        Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Processing " + ordersArray.length + " buy orders", Logger.LogLevel.INFO);
+                    }
                     for (String orderData : ordersArray) {
                         String[] parts = orderData.split(",");
                         if (parts.length >= 8) {
@@ -460,7 +495,9 @@ public class RedisDatabase implements DatabaseManager {
                             int filled = Integer.parseInt(parts[6]);
                             int amount = Integer.parseInt(parts[7]);
 
-                            Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Buy order - filled=" + filled + "/" + amount + ", price=" + price, Logger.LogLevel.INFO);
+                            if (enableLog) {
+                                Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Buy order - filled=" + filled + "/" + amount + ", price=" + price, Logger.LogLevel.INFO);
+                            }
 
                             PlayerOrder order = new PlayerOrder(orderUUID, playerUUID, item, OrderType.BUY, price, collected, filled, amount);
                             buyOrders.add(order);
@@ -470,11 +507,15 @@ public class RedisDatabase implements DatabaseManager {
                 }
 
                 String sellOffersStr = data.get("sell_offers");
-                Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: sellOffersStr length=" + (sellOffersStr != null ? sellOffersStr.length() : 0), Logger.LogLevel.INFO);
+                if (enableLog) {
+                    Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: sellOffersStr length=" + (sellOffersStr != null ? sellOffersStr.length() : 0), Logger.LogLevel.INFO);
+                }
                 if (sellOffersStr != null && !sellOffersStr.isEmpty()) {
                     List<PlayerOrder> sellOffers = new ArrayList<>();
                     String[] ordersArray = sellOffersStr.split(",,");
-                    Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Processing " + ordersArray.length + " sell offers", Logger.LogLevel.INFO);
+                    if (enableLog) {
+                        Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Processing " + ordersArray.length + " sell offers", Logger.LogLevel.INFO);
+                    }
                     for (String orderData : ordersArray) {
                         String[] parts = orderData.split(",");
                         if (parts.length >= 8) {
@@ -489,7 +530,9 @@ public class RedisDatabase implements DatabaseManager {
                             int filled = Integer.parseInt(parts[6]);
                             int amount = Integer.parseInt(parts[7]);
 
-                            Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Sell offer - filled=" + filled + "/" + amount + ", price=" + price, Logger.LogLevel.INFO);
+                            if (enableLog) {
+                                Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Sell offer - filled=" + filled + "/" + amount + ", price=" + price, Logger.LogLevel.INFO);
+                            }
 
                             PlayerOrder order = new PlayerOrder(orderUUID, playerUUID, item, OrderType.SELL, price, collected, filled, amount);
                             sellOffers.add(order);
@@ -499,12 +542,17 @@ public class RedisDatabase implements DatabaseManager {
                 }
 
                 DeluxeBazaar.getInstance().players.put(uuid, playerBazaar);
-                Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Completed - buyOrders=" + playerBazaar.getBuyOrders().size() + ", sellOffers=" + playerBazaar.getSellOffers().size(), Logger.LogLevel.INFO);
+                if (enableLog) {
+                    Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Completed - buyOrders=" + playerBazaar.getBuyOrders().size() + ", sellOffers=" + playerBazaar.getSellOffers().size(), Logger.LogLevel.INFO);
+                }
             }
 
             return true;
         } catch (Exception e) {
-            Logger.sendConsoleMessage("§c[DEBUG] loadPlayerFromRedis: Exception - " + e.getMessage(), Logger.LogLevel.ERROR);
+            boolean enableLog = DeluxeBazaar.getInstance().configFile.getBoolean("settings.enable_log", false);
+            if (enableLog) {
+                Logger.sendConsoleMessage("§c[DEBUG] loadPlayerFromRedis: Exception - " + e.getMessage(), Logger.LogLevel.ERROR);
+            }
             e.printStackTrace();
             return false;
         }
@@ -515,8 +563,12 @@ public class RedisDatabase implements DatabaseManager {
             String key = "bazaar:player:" + uuid.toString();
             Map<String, String> data = jedis.hgetAll(key);
 
+            boolean enableLog = DeluxeBazaar.getInstance().configFile.getBoolean("settings.enable_log", false);
+
             if (data.isEmpty()) {
-                Logger.sendConsoleMessage("§c[DEBUG] loadPlayerFromRedis: No data found in Redis for " + uuid, Logger.LogLevel.WARN);
+                if (enableLog) {
+                    Logger.sendConsoleMessage("§c[DEBUG] loadPlayerFromRedis: No data found in Redis for " + uuid, Logger.LogLevel.WARN);
+                }
                 return;
             }
 
@@ -529,11 +581,15 @@ public class RedisDatabase implements DatabaseManager {
             if (category != null && !category.isEmpty()) playerBazaar.setCategory(category);
 
             String buyOrdersStr = data.get("buy_orders");
-            Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: buyOrdersStr=" + (buyOrdersStr != null ? buyOrdersStr : "null"), Logger.LogLevel.INFO);
+            if (enableLog) {
+                Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: buyOrdersStr=" + (buyOrdersStr != null ? buyOrdersStr : "null"), Logger.LogLevel.INFO);
+            }
             if (buyOrdersStr != null && !buyOrdersStr.isEmpty()) {
                 List<PlayerOrder> buyOrders = new ArrayList<>();
                 String[] ordersArray = buyOrdersStr.split(",,");
-                Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Found " + ordersArray.length + " buy orders", Logger.LogLevel.INFO);
+                if (enableLog) {
+                    Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Found " + ordersArray.length + " buy orders", Logger.LogLevel.INFO);
+                }
                 for (String orderData : ordersArray) {
                     String[] parts = orderData.split(",");
                     if (parts.length >= 8) {
@@ -550,21 +606,29 @@ public class RedisDatabase implements DatabaseManager {
 
                         PlayerOrder order = new PlayerOrder(orderUUID, playerUUID, item, OrderType.BUY, price, collected, filled, amount);
                         buyOrders.add(order);
-                        Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Loaded buy order - filled=" + filled + "/" + amount + ", price=" + price, Logger.LogLevel.INFO);
+                        if (enableLog) {
+                            Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Loaded buy order - filled=" + filled + "/" + amount + ", price=" + price, Logger.LogLevel.INFO);
+                        }
                     }
                 }
                 playerBazaar.setBuyOrders(buyOrders);
             } else {
                 playerBazaar.setBuyOrders(new ArrayList<>());
-                Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: No buy orders, clearing list", Logger.LogLevel.INFO);
+                if (enableLog) {
+                    Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: No buy orders, clearing list", Logger.LogLevel.INFO);
+                }
             }
 
             String sellOffersStr = data.get("sell_offers");
-            Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: sellOffersStr=" + (sellOffersStr != null ? sellOffersStr : "null"), Logger.LogLevel.INFO);
+            if (enableLog) {
+                Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: sellOffersStr=" + (sellOffersStr != null ? sellOffersStr : "null"), Logger.LogLevel.INFO);
+            }
             if (sellOffersStr != null && !sellOffersStr.isEmpty()) {
                 List<PlayerOrder> sellOffers = new ArrayList<>();
                 String[] ordersArray = sellOffersStr.split(",,");
-                Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Found " + ordersArray.length + " sell offers", Logger.LogLevel.INFO);
+                if (enableLog) {
+                    Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Found " + ordersArray.length + " sell offers", Logger.LogLevel.INFO);
+                }
                 for (String orderData : ordersArray) {
                     String[] parts = orderData.split(",");
                     if (parts.length >= 8) {
@@ -581,17 +645,23 @@ public class RedisDatabase implements DatabaseManager {
 
                         PlayerOrder order = new PlayerOrder(orderUUID, playerUUID, item, OrderType.SELL, price, collected, filled, amount);
                         sellOffers.add(order);
-                        Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Loaded sell offer - filled=" + filled + "/" + amount + ", price=" + price, Logger.LogLevel.INFO);
+                        if (enableLog) {
+                            Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: Loaded sell offer - filled=" + filled + "/" + amount + ", price=" + price, Logger.LogLevel.INFO);
+                        }
                     }
                 }
                 playerBazaar.setSellOffers(sellOffers);
             } else {
                 playerBazaar.setSellOffers(new ArrayList<>());
-                Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: No sell offers, clearing list", Logger.LogLevel.INFO);
+                if (enableLog) {
+                    Logger.sendConsoleMessage("§e[DEBUG] loadPlayerFromRedis: No sell offers, clearing list", Logger.LogLevel.INFO);
+                }
             }
 
             DeluxeBazaar.getInstance().players.put(uuid, playerBazaar);
-            Logger.sendConsoleMessage("§a[DEBUG] loadPlayerFromRedis: Completed - buyOrders=" + playerBazaar.getBuyOrders().size() + ", sellOffers=" + playerBazaar.getSellOffers().size(), Logger.LogLevel.INFO);
+            if (enableLog) {
+                Logger.sendConsoleMessage("§a[DEBUG] loadPlayerFromRedis: Completed - buyOrders=" + playerBazaar.getBuyOrders().size() + ", sellOffers=" + playerBazaar.getSellOffers().size(), Logger.LogLevel.INFO);
+            }
         } catch (Exception e) {
             Logger.sendConsoleMessage("§cError loading player from Redis: " + e.getMessage(), Logger.LogLevel.ERROR);
             e.printStackTrace();
@@ -660,7 +730,10 @@ public class RedisDatabase implements DatabaseManager {
             String totalSellCount = data.get("total_sell_count");
             if (totalSellCount != null && !totalSellCount.isEmpty()) bazaarItem.setTotalSellCount(Integer.parseInt(totalSellCount));
 
-            Logger.sendConsoleMessage("§e[DEBUG] loadItemFromRedis: Rebuilding player mappings for item " + itemName, Logger.LogLevel.INFO);
+            boolean enableLog = DeluxeBazaar.getInstance().configFile.getBoolean("settings.enable_log", false);
+            if (enableLog) {
+                Logger.sendConsoleMessage("§e[DEBUG] loadItemFromRedis: Rebuilding player mappings for item " + itemName, Logger.LogLevel.INFO);
+            }
             rebuildMappingsForItem(bazaarItem);
         } catch (Exception e) {
             Logger.sendConsoleMessage("§cError loading item from Redis: " + e.getMessage(), Logger.LogLevel.ERROR);
@@ -788,7 +861,10 @@ public class RedisDatabase implements DatabaseManager {
             }
         }
 
-        Logger.sendConsoleMessage("§a[DEBUG] rebuildMappingsForItem: Rebuilt " + mappings + " mappings for item " + item.getName(), Logger.LogLevel.INFO);
+        boolean enableLog = DeluxeBazaar.getInstance().configFile.getBoolean("settings.enable_log", false);
+        if (enableLog) {
+            Logger.sendConsoleMessage("§a[DEBUG] rebuildMappingsForItem: Rebuilt " + mappings + " mappings for item " + item.getName(), Logger.LogLevel.INFO);
+        }
     }
 
     /**

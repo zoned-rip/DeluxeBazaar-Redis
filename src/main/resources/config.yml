@@ -37,7 +37,8 @@ settings:
   enable_log: true # enable or disable internal loggin system, useful for finding exploits and bugs
   disable_price_lore: true # if you enable this setting, plugin will remove buy/sell price if buy/sell is disabled.
   open_menu_directly: false # /bazaar command will open menu directly if enabled.
-
+  ignore_item_metadata: false # If enabled, ignores display name and lore when matching items (useful for plugins that modify vanilla items)
+  
 # PLUGIN ECONOMY
 economy:
   type: "vault" # Types: vault, royaleeconomy_balance, royaleeconomy_bank, lands, playerpoints, yaml, ultraeconomy, coinsengine

@@ -39,6 +39,11 @@ public class BazaarItemHook {
                 return false;
         }
 
+        boolean ignoreMetadata = DeluxeBazaar.getInstance().configFile.getBoolean("settings.ignore_item_metadata", false);
+        if (ignoreMetadata) {
+            return true;
+        }
+
         if (meta1 != null && meta2 != null) {
             String displayName1 = meta1.getDisplayName();
             String displayName2 = meta2.getDisplayName();

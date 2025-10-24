@@ -91,6 +91,12 @@ public class DeluxeBazaar extends JavaPlugin {
             this.dataHandler.registerItems();
             this.dataHandler.registerSubcategories();
 
+            // CRITICAL: After registerAllItems() creates new BazaarItem objects,
+            // we must reload OrderPrice data from Redis to repopulate them
+            if (this.databaseManager instanceof me.sedattr.deluxebazaar.database.RedisDatabase) {
+                ((me.sedattr.deluxebazaar.database.RedisDatabase) this.databaseManager).reloadItemsAfterRegistration();
+            }
+
             Logger.sendConsoleMessage("&aAddons loaded and items re-registered with plugin support!", Logger.LogLevel.INFO);
         }, 1L);
 

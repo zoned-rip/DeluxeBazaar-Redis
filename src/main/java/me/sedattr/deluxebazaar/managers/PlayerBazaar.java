@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import me.sedattr.deluxebazaar.DeluxeBazaar;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -39,6 +39,8 @@ public class BazaarListeners implements Listener {
         List<OrderPrice> orderPrices = new ArrayList<>(item.getSellPrices());
         Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: Found " + orderPrices.size() + " sell order prices", Logger.LogLevel.INFO);
 
+        boolean itemModified = false;
+        
         if (!orderPrices.isEmpty())
             for (OrderPrice orderPrice : orderPrices) {
                 if (count <= 0)
@@ -48,10 +50,20 @@ public class BazaarListeners implements Listener {
 
                 Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: Processing OrderPrice at price=" + orderPrice.getPrice() + ", itemAmount=" + orderPrice.getItemAmount() + ", orderAmount=" + orderPrice.getOrderAmount() + ", players=" + orderPrice.getPlayers().size(), Logger.LogLevel.INFO);
 
-                int itemCount = DeluxeBazaar.getInstance().orderHandler.getItemCount(player, "buy", item.getName(), orderPrice.getPrice());
-                int newCount = orderPrice.getItemAmount() - itemCount;
-                if (newCount <= 0)
+
+                int playerOwnItemsInThisPrice = 0;
+                if (orderPrice.getPlayers().containsKey(player.getUniqueId())) {
+                    for (PlayerOrder playerOrder : orderPrice.getPlayers().get(player.getUniqueId())) {
+                        playerOwnItemsInThisPrice += (playerOrder.getAmount() - playerOrder.getFilled());
+                    }
+                    Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: Player has " + playerOwnItemsInThisPrice + " own items in this OrderPrice, excluding from available count", Logger.LogLevel.INFO);
+                }
+                
+                int newCount = orderPrice.getItemAmount() - playerOwnItemsInThisPrice;
+                if (newCount <= 0) {
+                    Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: No items available after excluding player's own orders, skipping", Logger.LogLevel.INFO);
                     continue;
+                }
 
                 /*
                 double maximumPriceChange = DeluxeBazaar.getInstance().configFile.getBoolean("sell_offer.limit_price_change") ? DeluxeBazaar.getInstance().configFile.getDouble("sell_offer.maximum_price_change", 0.0) : 0.0;
@@ -66,6 +78,7 @@ public class BazaarListeners implements Listener {
                     Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: Partial fill - calling changePlayerOrders with count=" + count, Logger.LogLevel.INFO);
                     orderPrice.setItemAmount(orderPrice.getItemAmount() - count);
                     changePlayerOrders(player.getUniqueId(), count, orderPrice);
+                    itemModified = true;
                     break;
                 }
                 else {
@@ -74,17 +87,22 @@ public class BazaarListeners implements Listener {
                     changePlayerOrders(player.getUniqueId(), newCount, orderPrice);
 
                     item.getSellPrices().remove(orderPrice);
+                    itemModified = true;
                 }
             }
 
-        if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
-            MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
-            mysqlDb.saveItemAsync(item.getName(), item);
-            Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: Saved item to MySQL", Logger.LogLevel.INFO);
-        } else if (DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
-            RedisDatabase redisDb = (RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
-            redisDb.saveItemAsync(item.getName(), item);
-            Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: Saved item to Redis", Logger.LogLevel.INFO);
+        if (itemModified) {
+            if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
+                MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
+                mysqlDb.saveItemAsync(item.getName(), item);
+                Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: Saved item to MySQL", Logger.LogLevel.INFO);
+            } else if (DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
+                RedisDatabase redisDb = (RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
+                redisDb.saveItemAsync(item.getName(), item);
+                Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: Saved item to Redis", Logger.LogLevel.INFO);
+            }
+        } else {
+            Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: No orders processed, skipping item save", Logger.LogLevel.INFO);
         }
     }    @EventHandler
     public void onItemSell(BazaarItemSellEvent e) {
@@ -93,6 +111,8 @@ public class BazaarListeners implements Listener {
         BazaarItem item = e.getItem();
         int count = e.getCount();
 
+        boolean itemModified = false;
+        
         List<OrderPrice> orderPrices = new ArrayList<>(item.getBuyPrices());
         if (!orderPrices.isEmpty())
             for (OrderPrice orderPrice : orderPrices) {
@@ -101,8 +121,15 @@ public class BazaarListeners implements Listener {
                 if (orderPrice.getPrice() < price)
                     continue;
 
-                int itemCount = DeluxeBazaar.getInstance().orderHandler.getItemCount(player, "sell", item.getName(), orderPrice.getPrice());
-                int newCount = orderPrice.getItemAmount() - itemCount;
+
+                int playerOwnItemsInThisPrice = 0;
+                if (orderPrice.getPlayers().containsKey(player.getUniqueId())) {
+                    for (PlayerOrder playerOrder : orderPrice.getPlayers().get(player.getUniqueId())) {
+                        playerOwnItemsInThisPrice += (playerOrder.getAmount() - playerOrder.getFilled());
+                    }
+                }
+                
+                int newCount = orderPrice.getItemAmount() - playerOwnItemsInThisPrice;
                 if (newCount <= 0)
                     continue;
 
@@ -119,6 +146,7 @@ public class BazaarListeners implements Listener {
                     orderPrice.setItemAmount(orderPrice.getItemAmount() - count);
 
                     changePlayerOrders(player.getUniqueId(), count, orderPrice);
+                    itemModified = true;
                     break;
                 }
                 else {
@@ -126,15 +154,18 @@ public class BazaarListeners implements Listener {
                     changePlayerOrders(player.getUniqueId(), newCount, orderPrice);
 
                     item.getBuyPrices().remove(orderPrice);
+                    itemModified = true;
                 }
             }
 
-        if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
-            MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
-            mysqlDb.saveItemAsync(item.getName(), item);
-        } else if (DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
-            RedisDatabase redisDb = (RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
-            redisDb.saveItemAsync(item.getName(), item);
+        if (itemModified) {
+            if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
+                MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
+                mysqlDb.saveItemAsync(item.getName(), item);
+            } else if (DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
+                RedisDatabase redisDb = (RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
+                redisDb.saveItemAsync(item.getName(), item);
+            }
         }
     }    public void changePlayerOrders(UUID uuid, Integer count, OrderPrice orderPrice) {
         Logger.sendConsoleMessage("§e[DEBUG] changePlayerOrders: Called with uuid=" + uuid + ", count=" + count + ", orderPrice players=" + orderPrice.getPlayers().size(), Logger.LogLevel.INFO);
@@ -231,6 +262,15 @@ public class BazaarListeners implements Listener {
             RedisDatabase redisDb = (RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
             Logger.sendConsoleMessage("§e[DEBUG] changePlayerOrders: Using Redis, modified " + modifiedPlayers.size() + " players", Logger.LogLevel.INFO);
 
+            BazaarItem affectedItem = null;
+            for (Map.Entry<UUID, List<PlayerOrder>> entry : orderPrice.getPlayers().entrySet()) {
+                List<PlayerOrder> orders = entry.getValue();
+                if (!orders.isEmpty()) {
+                    affectedItem = orders.get(0).getItem();
+                    break;
+                }
+            }
+
             for (UUID modifiedPlayerUUID : modifiedPlayers) {
                 PlayerBazaar playerBazaar = DeluxeBazaar.getInstance().players.get(modifiedPlayerUUID);
                 if (playerBazaar != null) {
@@ -239,6 +279,15 @@ public class BazaarListeners implements Listener {
                 } else {
                     Logger.sendConsoleMessage("§c[DEBUG] changePlayerOrders: PlayerBazaar is NULL when trying to save " + modifiedPlayerUUID, Logger.LogLevel.WARN);
                 }
+            }
+
+            // CRITICAL FIX: Save the item to sync OrderPrice.itemAmount across servers
+            // When orders quantities change and must be published via Redis pub/sub
+            if (affectedItem != null) {
+                Logger.sendConsoleMessage("§e[DEBUG] changePlayerOrders: Saving item " + affectedItem.getName() + " to Redis to sync OrderPrice changes", Logger.LogLevel.INFO);
+                redisDb.saveItemAsync(affectedItem.getName(), affectedItem);
+            } else {
+                Logger.sendConsoleMessage("§c[DEBUG] changePlayerOrders: Could not determine affected item for Redis save!", Logger.LogLevel.WARN);
             }
         }
     }

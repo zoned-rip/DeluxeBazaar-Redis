@@ -170,6 +170,16 @@ public class ItemMenu {
         if (sellOffer != null) {
             ConfigurationSection loreSection = this.section.getConfigurationSection("sellOffer.lore");
             List<OrderPrice> sellOffers = bazaarItem.getSellPrices().stream().sorted(Comparator.comparingDouble(OrderPrice::getPrice)).collect(Collectors.toList());
+            
+            boolean enableLog = DeluxeBazaar.getInstance().configFile.getBoolean("settings.enable_log", false);
+            if (enableLog) {
+                me.sedattr.deluxebazaar.others.Logger.sendConsoleMessage("§e[DEBUG] ItemMenu: Opening menu for " + name + ", sellOffers count=" + sellOffers.size(), me.sedattr.deluxebazaar.others.Logger.LogLevel.INFO);
+                me.sedattr.deluxebazaar.others.Logger.sendConsoleMessage("§e[DEBUG] ItemMenu: bazaarItem.getSellPrices() size=" + bazaarItem.getSellPrices().size(), me.sedattr.deluxebazaar.others.Logger.LogLevel.INFO);
+                for (OrderPrice order : sellOffers) {
+                    me.sedattr.deluxebazaar.others.Logger.sendConsoleMessage("§e[DEBUG] ItemMenu: SellOffer - price=" + order.getPrice() + ", itemAmount=" + order.getItemAmount() + ", orderAmount=" + order.getOrderAmount(), me.sedattr.deluxebazaar.others.Logger.LogLevel.INFO);
+                }
+            }
+            
             List<String> lore = new ArrayList<>();
             if (sellOffers.size() > 0) {
                 lore.addAll(loreSection.getStringList("header"));

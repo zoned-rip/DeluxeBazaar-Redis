@@ -38,7 +38,7 @@ settings:
   disable_price_lore: true # if you enable this setting, plugin will remove buy/sell price if buy/sell is disabled.
   open_menu_directly: false # /bazaar command will open menu directly if enabled.
   ignore_item_metadata: false # If enabled, ignores display name and lore when matching items (useful for plugins that modify vanilla items)
-  
+
 # PLUGIN ECONOMY
 economy:
   type: "vault" # Types: vault, royaleeconomy_balance, royaleeconomy_bank, lands, playerpoints, yaml, ultraeconomy, coinsengine
@@ -71,6 +71,7 @@ database:
     database: 0 # Redis database number (0-15)
     channel_prefix: "deluxebazaar:" # Prefix for pub/sub channels
     use_ssl: false # Enable SSL/TLS for secure connections (required for Upstash, AWS ElastiCache with encryption)
+    smart_save: true # Only save online players on shutdown to prevent overwriting other servers' data (recommended: true)
   mysql_settings: # For mysql dataabase
     link: "com.mysql.jdbc.Driver" # new version: com.mysql.cj.jdbc.Driver
     url: "jdbc:mysql://localhost:1907/Bazaar" # jdbc:mysql://host:port/database

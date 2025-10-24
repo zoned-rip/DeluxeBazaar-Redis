@@ -17,6 +17,8 @@ libraries/
 *.iml
 *.ipr
 
+.github
+.github/
 ### Eclipse ###
 .apt_generated
 .classpath

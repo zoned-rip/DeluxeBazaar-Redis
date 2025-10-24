@@ -85,6 +85,15 @@ public class DeluxeBazaar extends JavaPlugin {
         registerCommandsListeners();
         InventoryAPI.setup(DeluxeBazaar.this);
 
+        me.sedattr.deluxebazaar.others.TaskUtils.runLater(() -> {
+            this.dataHandler.loadAddons();
+            this.dataHandler.registerAllItems();
+            this.dataHandler.registerItems();
+            this.dataHandler.registerSubcategories();
+
+            Logger.sendConsoleMessage("&aAddons loaded and items re-registered with plugin support!", Logger.LogLevel.INFO);
+        }, 1L);
+
         String version = "1." + this.version;
         Logger.sendConsoleMessage("Your server is running on &f" + version + "%level_color%.", Logger.LogLevel.INFO);
 

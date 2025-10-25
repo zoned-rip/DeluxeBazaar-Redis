@@ -24,6 +24,22 @@ public class BazaarItemHook {
         if (item1.getMaxStackSize() != item2.getMaxStackSize())
             return false;
 
+        // Check for EcoItems FIRST - prevents vanilla items from matching EcoItems
+        if (DeluxeBazaar.getInstance().ecoItemsAddon != null) {
+            String ecoId1 = DeluxeBazaar.getInstance().ecoItemsAddon.getEcoItemId(item1);
+            String ecoId2 = DeluxeBazaar.getInstance().ecoItemsAddon.getEcoItemId(item2);
+            
+            // If one is an EcoItem and the other isn't, they don't match
+            if (ecoId1 != null && ecoId2 == null)
+                return false;
+            if (ecoId1 == null && ecoId2 != null)
+                return false;
+            
+            // If both are EcoItems, compare by ID (ignores dynamic lore)
+            if (ecoId1 != null && ecoId2 != null)
+                return ecoId1.equals(ecoId2);
+        }
+
         ItemMeta meta1 = item1.getItemMeta();
         ItemMeta meta2 = item2.getItemMeta();
         if (meta1 == null && meta2 != null)
@@ -105,6 +121,18 @@ public class BazaarItemHook {
                 ConfigurationSection section = DeluxeBazaar.getInstance().itemsFile.getConfigurationSection("items." + entry.getKey() + ".persistent");
                 if (section != null && PersistentDataContainerUtils.isCustomItem(itemStack, section) && PersistentDataContainerUtils.isCustomItem(item, section))
                     return entry.getKey();
+            }
+
+            if (DeluxeBazaar.getInstance().ecoItemsAddon != null) {
+                String ecoItemId = DeluxeBazaar.getInstance().ecoItemsAddon.getEcoItemId(item);
+                if (ecoItemId != null) {
+                    ConfigurationSection itemSection = DeluxeBazaar.getInstance().itemsFile.getConfigurationSection("items." + entry.getKey());
+                    if (itemSection != null) {
+                        String configuredEcoId = itemSection.getString("eco_items");
+                        if (ecoItemId.equals(configuredEcoId))
+                            return entry.getKey();
+                    }
+                }
             }
 
             if (isSimilar(item, itemStack))

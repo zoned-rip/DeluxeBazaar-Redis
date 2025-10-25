@@ -144,7 +144,6 @@ public class OrdersMenu {
 
                 gui.setItem(slots.get(i) - 1, ClickableItem.of(itemStack, (event -> {
                     int left = playerOrder.getFilled() - playerOrder.getCollected();
-                    Logger.sendConsoleMessage("§e[DEBUG] OrdersMenu claim: filled=" + playerOrder.getFilled() + ", collected=" + playerOrder.getCollected() + ", left=" + left, Logger.LogLevel.INFO);
 
                     if (left <= 0) {
                         new OrderSettingsMenu(player).openMenu(playerOrder);
@@ -170,12 +169,10 @@ public class OrdersMenu {
                     }
 
                     int total = playerOrder.getCollected() + left;
-                    Logger.sendConsoleMessage("§e[DEBUG] OrdersMenu claim: total=" + total + ", amount=" + playerOrder.getAmount(), Logger.LogLevel.INFO);
 
                     playerOrder.setCollected(total);
 
                     if (total >= playerOrder.getAmount()) {
-                        Logger.sendConsoleMessage("§e[DEBUG] OrdersMenu claim: Removing fully collected order", Logger.LogLevel.INFO);
                         if (type.equals(OrderType.BUY))
                             playerBazaar.getBuyOrders().remove(playerOrder);
                         else
@@ -185,11 +182,9 @@ public class OrdersMenu {
                     if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
                         MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
                         mysqlDb.savePlayer(player.getUniqueId(), playerBazaar);
-                        Logger.sendConsoleMessage("§e[DEBUG] OrdersMenu claim: Saved to MySQL (sync)", Logger.LogLevel.INFO);
                     } else if (DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
                         RedisDatabase redisDb = (RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
                         redisDb.savePlayer(player.getUniqueId(), playerBazaar);
-                        Logger.sendConsoleMessage("§e[DEBUG] OrdersMenu claim: Saved to Redis (sync), buyOrders=" + playerBazaar.getBuyOrders().size() + ", sellOffers=" + playerBazaar.getSellOffers().size(), Logger.LogLevel.INFO);
                     }
 
                     Utils.sendMessage(player, playerOrder.getType().equals(OrderType.BUY) ? "claimed_buy_order" : "claimed_sell_offer", new PlaceholderUtil()

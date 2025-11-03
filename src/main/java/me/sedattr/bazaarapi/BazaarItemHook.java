@@ -18,24 +18,76 @@ public class BazaarItemHook {
         return DeluxeBazaar.getInstance().bazaarItems.getOrDefault(name, null);
     }
 
+    /**
+     * Checks if an item is a vanilla Minecraft item (not modified by custom plugins)
+     * Vanilla items have minecraft namespace and minecraft:common tooltip_style
+     * Excludes EcoItems (they have ecoitems namespace in PersistentDataContainer)
+     */
+    private static boolean isVanillaItem(ItemStack item) {
+        if (item == null)
+            return false;
+        
+        try {
+            String materialKey = item.getType().getKey().toString();
+            if (!materialKey.startsWith("minecraft:"))
+                return false;
+            
+            if (DeluxeBazaar.getInstance().ecoItemsAddon != null) {
+                String ecoId = DeluxeBazaar.getInstance().ecoItemsAddon.getEcoItemId(item);
+                if (ecoId != null)
+                    return false; 
+            }
+
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null && DeluxeBazaar.getInstance().version > 14) {
+                try {
+                    org.bukkit.persistence.PersistentDataContainer container = meta.getPersistentDataContainer();
+                    for (org.bukkit.NamespacedKey key : container.getKeys()) {
+                        String namespace = key.getNamespace().toLowerCase();
+                        if (namespace.equals("ecoitems") || namespace.equals("eco-items"))
+                            return false;
+                    }
+                } catch (Exception ignored) {}
+            }
+            
+            de.tr7zw.changeme.nbtapi.NBTItem nbtItem = new de.tr7zw.changeme.nbtapi.NBTItem(item);
+            if (nbtItem.hasTag("tooltip_style")) {
+                String tooltipStyle = nbtItem.getString("tooltip_style");
+                return tooltipStyle != null && tooltipStyle.startsWith("minecraft:common");
+            }
+    
+            
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public static boolean isSimilar(ItemStack item1, ItemStack item2) {
         if (item1.getType() != item2.getType())
             return false;
         if (item1.getMaxStackSize() != item2.getMaxStackSize())
             return false;
+        
+        boolean isVanilla1 = isVanillaItem(item1);
+        boolean isVanilla2 = isVanillaItem(item2);
+        
+        if (isVanilla1 && isVanilla2) {
+            return true;
+        }
+        
+        if (isVanilla1 != isVanilla2)
+            return false;
 
-        // Check for EcoItems FIRST - prevents vanilla items from matching EcoItems
         if (DeluxeBazaar.getInstance().ecoItemsAddon != null) {
             String ecoId1 = DeluxeBazaar.getInstance().ecoItemsAddon.getEcoItemId(item1);
             String ecoId2 = DeluxeBazaar.getInstance().ecoItemsAddon.getEcoItemId(item2);
             
-            // If one is an EcoItem and the other isn't, they don't match
             if (ecoId1 != null && ecoId2 == null)
                 return false;
             if (ecoId1 == null && ecoId2 != null)
                 return false;
             
-            // If both are EcoItems, compare by ID (ignores dynamic lore)
             if (ecoId1 != null && ecoId2 != null)
                 return ecoId1.equals(ecoId2);
         }
@@ -63,31 +115,52 @@ public class BazaarItemHook {
         if (meta1 != null && meta2 != null) {
             String displayName1 = meta1.getDisplayName();
             String displayName2 = meta2.getDisplayName();
-            if (displayName1 == null && displayName2 == null)
-                return true;
-            if (displayName1 == null && displayName2 != null)
-                return false;
-            if (displayName2 == null && displayName1 != null)
-                return false;
-            if (displayName1 != null && displayName2 != null && !displayName1.equals(displayName2))
-                return false;
+            if (displayName1 == null && displayName2 == null) {
+            } else if (displayName1 == null || displayName2 == null) {
+                return false; 
+            } else if (!displayName1.equals(displayName2)) {
+                return false; 
+            }
 
             List<String> lore1 = meta1.getLore();
             List<String> lore2 = meta2.getLore();
-            if (lore1 == null && lore2 == null)
-                return true;
-            if (lore1 == null)
+            
+            if (lore1 == null && lore2 == null) {
+            } else if (lore1 == null || lore2 == null) {
                 return false;
-            if (lore2 == null)
+            } else if (!lore1.equals(lore2)) {
                 return false;
-            if (lore1.isEmpty() && lore2.isEmpty())
-                return true;
-            if (lore1.isEmpty())
-                return false;
-            if (lore2.isEmpty())
-                return false;
+            }
 
-            return lore1.equals(lore2);
+            if (DeluxeBazaar.getInstance().version > 14) {
+                try {
+                    org.bukkit.persistence.PersistentDataContainer container1 = meta1.getPersistentDataContainer();
+                    org.bukkit.persistence.PersistentDataContainer container2 = meta2.getPersistentDataContainer();
+                    
+                    java.util.Set<org.bukkit.NamespacedKey> keys1 = container1.getKeys();
+                    java.util.Set<org.bukkit.NamespacedKey> keys2 = container2.getKeys();
+                    
+                    if (keys1.size() != keys2.size())
+                        return false;
+                    
+                    for (org.bukkit.NamespacedKey key : keys1) {
+                        if (!keys2.contains(key))
+                            return false;
+                        
+                        String val1 = container1.get(key, org.bukkit.persistence.PersistentDataType.STRING);
+                        String val2 = container2.get(key, org.bukkit.persistence.PersistentDataType.STRING);
+                        
+                        if (val1 != null || val2 != null) {
+                            if (val1 == null || val2 == null || !val1.equals(val2))
+                                return false;
+                        }
+                    }
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         return true;

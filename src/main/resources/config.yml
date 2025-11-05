@@ -263,7 +263,7 @@ buy_order:
 # SELL OFFER SETTINGS
 sell_offer:
   limit_price_change: true # When enabled, the price of a given item cannot change more than by a certain % each price-update cycle. Set to false to disable limitation-system entirely
-  #  maximum_price_change: 10.0 # Factor in % relative to current-price an item can change each price-update cycle
+  maximum_price_change: 10.0 # Factor in % relative to current-price an item can change each price-update cycle
   maximum_item_amount: 1600 # How many items can players with the default permissions sell per sell-order.
   maximum_offer_amount: 10 # How many sell-orders a player with default permissions can have simultaneously
   required_offer_amount: 1 # The minimum amount of items a player must buy per buy-order. Set to minimum 1 but feel free to increase if wanted.

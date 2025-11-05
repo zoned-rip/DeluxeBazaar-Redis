@@ -184,15 +184,15 @@ public class OrderSettingsMenu implements MenuManager {
                 return;
             }
 
-            ConfigurationSection buyOrderSection = DeluxeBazaar.getInstance().configFile.getConfigurationSection("sell_offer");
-            if (buyOrderSection != null && buyOrderSection.getBoolean("limit_price_change")) {
-                double currentBuyPrice = BazaarItemHook.getBuyPrice(player, this.order.getItem().getName(), 1);
-                double maximumChange = buyOrderSection.getDouble("maximum_price_change");
+            ConfigurationSection sellOfferSection = DeluxeBazaar.getInstance().configFile.getConfigurationSection("sell_offer");
+            if (sellOfferSection != null && sellOfferSection.getBoolean("limit_price_change")) {
+                double currentSellPrice = BazaarItemHook.getSellPrice(player, this.order.getItem().getName(), 1);
+                double maximumChange = sellOfferSection.getDouble("maximum_price_change", 999999.0);
 
-                if ((number - currentBuyPrice) > maximumChange) {
+                if ((number - currentSellPrice) > maximumChange) {
                     Utils.sendMessage(player, "underbidding");
                     return;
-                } else if ((currentBuyPrice - number) > maximumChange) {
+                } else if ((currentSellPrice - number) > maximumChange) {
                     Utils.sendMessage(player, "overbidding");
                     return;
                 }

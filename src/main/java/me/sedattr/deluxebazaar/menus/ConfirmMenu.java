@@ -183,15 +183,15 @@ public class ConfirmMenu {
                     return;
                 }
 
-                ConfigurationSection buyOrderSection = DeluxeBazaar.getInstance().configFile.getConfigurationSection("sell_offer");
-                if (buyOrderSection.getBoolean("limit_price_change")) {
-                    double currentBuyPrice = BazaarItemHook.getBuyPrice(player, name, 1);
-                    double maximumChange = buyOrderSection.getDouble("maximum_price_change");
+                ConfigurationSection sellOfferSection = DeluxeBazaar.getInstance().configFile.getConfigurationSection("sell_offer");
+                if (sellOfferSection.getBoolean("limit_price_change")) {
+                    double currentSellPrice = BazaarItemHook.getSellPrice(player, name, 1);
+                    double maximumChange = sellOfferSection.getDouble("maximum_price_change", 999999.0);
 
-                    if ((unitPrice - currentBuyPrice) > maximumChange) {
+                    if ((unitPrice - currentSellPrice) > maximumChange) {
                         Utils.sendMessage(player, "underbidding");
                         return;
-                    } else if ((currentBuyPrice - unitPrice) > maximumChange) {
+                    } else if ((currentSellPrice - unitPrice) > maximumChange) {
                         Utils.sendMessage(player, "overbidding");
                         return;
                     }

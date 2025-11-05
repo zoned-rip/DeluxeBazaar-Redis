@@ -66,7 +66,7 @@ public class SetSellOfferMenu implements MenuManager {
 
             switch (itemType) {
                 case "top":
-                    unitPrice = buyPrice - itemSection.getDouble("price");
+                    unitPrice = sellPrice - itemSection.getDouble("price");
                     break;
                 case "spread":
                     double spread = buyPrice - sellPrice;
@@ -76,6 +76,9 @@ public class SetSellOfferMenu implements MenuManager {
                     placeholderUtil
                             .addPlaceholder("%spread_amount%", DeluxeBazaar.getInstance().numberFormat.format(spread))
                             .addPlaceholder("%spread%", DeluxeBazaar.getInstance().numberFormat.format(spread));
+                    break;
+                case "same":
+                    unitPrice = sellPrice;
                     break;
                 default:
                     unitPrice = buyPrice;

@@ -4,6 +4,7 @@ import me.sedattr.deluxebazaar.DeluxeBazaar;
 import me.sedattr.bazaarapi.BazaarItemHook;
 import me.sedattr.bazaarapi.events.BazaarItemBuyEvent;
 import me.sedattr.bazaarapi.events.BazaarItemSellEvent;
+import me.sedattr.deluxebazaar.database.HybridDatabase;
 import me.sedattr.deluxebazaar.database.MySQLDatabase;
 import me.sedattr.deluxebazaar.database.RedisDatabase;
 import me.sedattr.deluxebazaar.managers.BazaarItem;
@@ -113,7 +114,10 @@ public class EconomyHandler {
         Utils.executeCommands(player, item.getName(), "itemCommands.buy");
         Utils.playSound(player, "bought_item");
 
-        if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
+        if (DeluxeBazaar.getInstance().databaseManager instanceof HybridDatabase) {
+            HybridDatabase hybridDb = (HybridDatabase) DeluxeBazaar.getInstance().databaseManager;
+            hybridDb.saveItemPriceAsync(item.getName(), item);
+        } else if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
             MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
             mysqlDb.saveItemPriceAsync(item.getName(), item);
         } else if (DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
@@ -201,7 +205,10 @@ public class EconomyHandler {
         Utils.executeCommands(player, item.getName(), "itemCommands.sell");
         Utils.playSound(player, "sold_item");
 
-        if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
+        if (DeluxeBazaar.getInstance().databaseManager instanceof HybridDatabase) {
+            HybridDatabase hybridDb = (HybridDatabase) DeluxeBazaar.getInstance().databaseManager;
+            hybridDb.saveItemPriceAsync(item.getName(), item);
+        } else if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
             MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
             mysqlDb.saveItemPriceAsync(item.getName(), item);
         } else if (DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {

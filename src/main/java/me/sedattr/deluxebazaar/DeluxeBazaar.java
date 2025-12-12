@@ -7,6 +7,8 @@ import me.sedattr.deluxebazaar.commands.BazaarAdminCommand;
 import me.sedattr.deluxebazaar.commands.BazaarCommand;
 import me.sedattr.deluxebazaar.configupdater.ConfigUpdater;
 import me.sedattr.deluxebazaar.database.DatabaseManager;
+import me.sedattr.deluxebazaar.database.HybridDatabase;
+import me.sedattr.deluxebazaar.database.RedisDatabase;
 import me.sedattr.deluxebazaar.economy.EconomyManager;
 import me.sedattr.deluxebazaar.handlers.*;
 import me.sedattr.deluxebazaar.listeners.BazaarListeners;
@@ -92,9 +94,11 @@ public class DeluxeBazaar extends JavaPlugin {
             this.dataHandler.registerSubcategories();
 
             // CRITICAL: After registerAllItems() creates new BazaarItem objects,
-            // we must reload OrderPrice data from Redis to repopulate them
+            // we must reload OrderPrice data from database to repopulate them
             if (this.databaseManager instanceof me.sedattr.deluxebazaar.database.RedisDatabase) {
                 ((me.sedattr.deluxebazaar.database.RedisDatabase) this.databaseManager).reloadItemsAfterRegistration();
+            } else if (this.databaseManager instanceof me.sedattr.deluxebazaar.database.HybridDatabase) {
+                ((me.sedattr.deluxebazaar.database.HybridDatabase) this.databaseManager).reloadItemsAfterRegistration();
             }
 
             Logger.sendConsoleMessage("&aAddons loaded and items re-registered with plugin support!", Logger.LogLevel.INFO);
@@ -167,6 +171,13 @@ public class DeluxeBazaar extends JavaPlugin {
             Logger.sendConsoleMessage("Saving all datas to database...", Logger.LogLevel.WARN);
             long time = System.currentTimeMillis();
             databaseManager.saveDatabase();
+
+            // Close database connections properly
+            if (databaseManager instanceof HybridDatabase) {
+                ((HybridDatabase) databaseManager).close();
+            } else if (databaseManager instanceof RedisDatabase) {
+                ((RedisDatabase) databaseManager).close();
+            }
 
             Logger.sendConsoleMessage("Database successfully saved! Took &f" + (System.currentTimeMillis() - time) + "ms %level_color%to complete!", Logger.LogLevel.WARN);
         }

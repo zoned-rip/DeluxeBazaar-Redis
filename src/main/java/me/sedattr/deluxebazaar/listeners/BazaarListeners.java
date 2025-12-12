@@ -3,6 +3,7 @@ package me.sedattr.deluxebazaar.listeners;
 import me.sedattr.deluxebazaar.DeluxeBazaar;
 import me.sedattr.bazaarapi.events.BazaarItemBuyEvent;
 import me.sedattr.bazaarapi.events.BazaarItemSellEvent;
+import me.sedattr.deluxebazaar.database.HybridDatabase;
 import me.sedattr.deluxebazaar.database.MySQLDatabase;
 import me.sedattr.deluxebazaar.database.RedisDatabase;
 import me.sedattr.deluxebazaar.managers.*;
@@ -30,13 +31,15 @@ public class BazaarListeners implements Listener {
     @EventHandler
     public void onItemBuy(BazaarItemBuyEvent e) {
         OfflinePlayer player = e.getPlayer();
-        Double price = e.getUnitPrice();
         BazaarItem item = e.getItem();
         int count = e.getCount();
 
-        Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: Player=" + player.getName() + ", Item=" + item.getName() + ", Count=" + count + ", Price=" + price, Logger.LogLevel.INFO);
+        Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: Player=" + player.getName() + ", Item=" + item.getName() + ", Count=" + count, Logger.LogLevel.INFO);
 
+        // Get sell prices sorted by lowest price first (same order as BazaarItemHook.getBuyPrice uses)
         List<OrderPrice> orderPrices = new ArrayList<>(item.getSellPrices());
+        orderPrices.sort(Comparator.comparing(OrderPrice::getPrice));
+        
         Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: Found " + orderPrices.size() + " sell order prices", Logger.LogLevel.INFO);
 
         boolean itemModified = false;
@@ -45,8 +48,9 @@ public class BazaarListeners implements Listener {
             for (OrderPrice orderPrice : orderPrices) {
                 if (count <= 0)
                     break;
-                if (orderPrice.getPrice() > price)
-                    continue;
+                // Note: We don't filter by price here because the buyer has already paid
+                // the total price calculated by BazaarItemHook.getBuyPrice() which includes
+                // orders at various price points. We process orders in price order (cheapest first).
 
                 Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: Processing OrderPrice at price=" + orderPrice.getPrice() + ", itemAmount=" + orderPrice.getItemAmount() + ", orderAmount=" + orderPrice.getOrderAmount() + ", players=" + orderPrice.getPlayers().size(), Logger.LogLevel.INFO);
 
@@ -92,7 +96,11 @@ public class BazaarListeners implements Listener {
             }
 
         if (itemModified) {
-            if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
+            if (DeluxeBazaar.getInstance().databaseManager instanceof HybridDatabase) {
+                HybridDatabase hybridDb = (HybridDatabase) DeluxeBazaar.getInstance().databaseManager;
+                hybridDb.saveItemAsync(item.getName(), item);
+                Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: Saved item to Hybrid (Redis+MySQL)", Logger.LogLevel.INFO);
+            } else if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
                 MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
                 mysqlDb.saveItemAsync(item.getName(), item);
                 Logger.sendConsoleMessage("§e[DEBUG] onItemBuy: Saved item to MySQL", Logger.LogLevel.INFO);
@@ -107,19 +115,22 @@ public class BazaarListeners implements Listener {
     }    @EventHandler
     public void onItemSell(BazaarItemSellEvent e) {
         OfflinePlayer player = e.getPlayer();
-        Double price = e.getUnitPrice();
         BazaarItem item = e.getItem();
         int count = e.getCount();
 
         boolean itemModified = false;
         
+        // Get buy prices sorted by highest price first (same order as BazaarItemHook.getSellPrice uses)
         List<OrderPrice> orderPrices = new ArrayList<>(item.getBuyPrices());
+        orderPrices.sort(Comparator.comparing(OrderPrice::getPrice).reversed());
+        
         if (!orderPrices.isEmpty())
             for (OrderPrice orderPrice : orderPrices) {
                 if (count <= 0)
                     break;
-                if (orderPrice.getPrice() < price)
-                    continue;
+                // Note: We don't filter by price here because the seller has already received
+                // the total price calculated by BazaarItemHook.getSellPrice() which includes
+                // orders at various price points. We process orders in price order (highest first).
 
 
                 int playerOwnItemsInThisPrice = 0;
@@ -159,7 +170,10 @@ public class BazaarListeners implements Listener {
             }
 
         if (itemModified) {
-            if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
+            if (DeluxeBazaar.getInstance().databaseManager instanceof HybridDatabase) {
+                HybridDatabase hybridDb = (HybridDatabase) DeluxeBazaar.getInstance().databaseManager;
+                hybridDb.saveItemAsync(item.getName(), item);
+            } else if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
                 MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
                 mysqlDb.saveItemAsync(item.getName(), item);
             } else if (DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
@@ -249,7 +263,39 @@ public class BazaarListeners implements Listener {
 
         Logger.sendConsoleMessage("§e[DEBUG] changePlayerOrders: Finished loop, modified " + modifiedPlayers.size() + " players", Logger.LogLevel.INFO);
         Logger.sendConsoleMessage("§e[DEBUG] changePlayerOrders: Keeping filled orders in player lists for claiming", Logger.LogLevel.INFO);
-        if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
+        
+        // Determine affected item for item save
+        BazaarItem affectedItem = null;
+        for (Map.Entry<UUID, List<PlayerOrder>> entry : orderPrice.getPlayers().entrySet()) {
+            List<PlayerOrder> orders = entry.getValue();
+            if (!orders.isEmpty()) {
+                affectedItem = orders.get(0).getItem();
+                break;
+            }
+        }
+        
+        if (DeluxeBazaar.getInstance().databaseManager instanceof HybridDatabase) {
+            HybridDatabase hybridDb = (HybridDatabase) DeluxeBazaar.getInstance().databaseManager;
+            Logger.sendConsoleMessage("§e[DEBUG] changePlayerOrders: Using Hybrid (Redis+MySQL), modified " + modifiedPlayers.size() + " players", Logger.LogLevel.INFO);
+
+            for (UUID modifiedPlayerUUID : modifiedPlayers) {
+                PlayerBazaar playerBazaar = DeluxeBazaar.getInstance().players.get(modifiedPlayerUUID);
+                if (playerBazaar != null) {
+                    Logger.sendConsoleMessage("§e[DEBUG] changePlayerOrders: Saving player " + modifiedPlayerUUID + " to Hybrid", Logger.LogLevel.INFO);
+                    hybridDb.savePlayerAsync(modifiedPlayerUUID, playerBazaar);
+                } else {
+                    Logger.sendConsoleMessage("§c[DEBUG] changePlayerOrders: PlayerBazaar is NULL when trying to save " + modifiedPlayerUUID, Logger.LogLevel.WARN);
+                }
+            }
+
+            // CRITICAL FIX: Save the item to sync OrderPrice.itemAmount across servers
+            if (affectedItem != null) {
+                Logger.sendConsoleMessage("§e[DEBUG] changePlayerOrders: Saving item " + affectedItem.getName() + " to Hybrid to sync OrderPrice changes", Logger.LogLevel.INFO);
+                hybridDb.saveItemAsync(affectedItem.getName(), affectedItem);
+            } else {
+                Logger.sendConsoleMessage("§c[DEBUG] changePlayerOrders: Could not determine affected item for Hybrid save!", Logger.LogLevel.WARN);
+            }
+        } else if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
             MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
             for (UUID modifiedPlayerUUID : modifiedPlayers) {
                 PlayerBazaar playerBazaar = DeluxeBazaar.getInstance().players.get(modifiedPlayerUUID);
@@ -261,15 +307,6 @@ public class BazaarListeners implements Listener {
         } else if (DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
             RedisDatabase redisDb = (RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
             Logger.sendConsoleMessage("§e[DEBUG] changePlayerOrders: Using Redis, modified " + modifiedPlayers.size() + " players", Logger.LogLevel.INFO);
-
-            BazaarItem affectedItem = null;
-            for (Map.Entry<UUID, List<PlayerOrder>> entry : orderPrice.getPlayers().entrySet()) {
-                List<PlayerOrder> orders = entry.getValue();
-                if (!orders.isEmpty()) {
-                    affectedItem = orders.get(0).getItem();
-                    break;
-                }
-            }
 
             for (UUID modifiedPlayerUUID : modifiedPlayers) {
                 PlayerBazaar playerBazaar = DeluxeBazaar.getInstance().players.get(modifiedPlayerUUID);

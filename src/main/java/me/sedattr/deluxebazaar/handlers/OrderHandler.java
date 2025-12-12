@@ -2,6 +2,7 @@ package me.sedattr.deluxebazaar.handlers;
 
 import me.sedattr.deluxebazaar.DeluxeBazaar;
 import me.sedattr.bazaarapi.BazaarItemHook;
+import me.sedattr.deluxebazaar.database.HybridDatabase;
 import me.sedattr.deluxebazaar.database.MySQLDatabase;
 import me.sedattr.deluxebazaar.database.RedisDatabase;
 import me.sedattr.deluxebazaar.managers.*;
@@ -37,7 +38,11 @@ public class OrderHandler {
         else
             playerBazaar.getSellOffers().remove(order);
 
-        if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
+        if (DeluxeBazaar.getInstance().databaseManager instanceof HybridDatabase) {
+            HybridDatabase hybridDb = (HybridDatabase) DeluxeBazaar.getInstance().databaseManager;
+            hybridDb.savePlayerAsync(player.getUniqueId(), playerBazaar);
+            hybridDb.saveItemAsync(bazaarItem.getName(), bazaarItem);
+        } else if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
             MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
             mysqlDb.savePlayerAsync(player.getUniqueId(), playerBazaar);
             mysqlDb.saveItemAsync(bazaarItem.getName(), bazaarItem);
@@ -72,7 +77,11 @@ public class OrderHandler {
         else
             playerBazaar.getSellOffers().add(playerOrder);
 
-        if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
+        if (DeluxeBazaar.getInstance().databaseManager instanceof HybridDatabase) {
+            HybridDatabase hybridDb = (HybridDatabase) DeluxeBazaar.getInstance().databaseManager;
+            hybridDb.savePlayerAsync(player.getUniqueId(), playerBazaar);
+            hybridDb.saveItemAsync(playerOrder.getItem().getName(), playerOrder.getItem());
+        } else if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
             MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
             mysqlDb.savePlayerAsync(player.getUniqueId(), playerBazaar);
             mysqlDb.saveItemAsync(playerOrder.getItem().getName(), playerOrder.getItem());

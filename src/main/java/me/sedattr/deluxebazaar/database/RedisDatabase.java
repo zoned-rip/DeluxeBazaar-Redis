@@ -857,6 +857,10 @@ public class RedisDatabase implements DatabaseManager {
      */
     private int rebuildPlayerOrderMappings(UUID playerUUID, PlayerBazaar playerBazaar) {
         int mappings = 0;
+        
+        // CRITICAL: First remove old mappings for this player from ALL items
+        // This ensures we don't have stale PlayerOrder objects with outdated filled counts
+        removePlayerFromAllOrderPrices(playerUUID);
 
         for (PlayerOrder playerOrder : playerBazaar.getBuyOrders()) {
             if (addPlayerToOrderPrice(playerUUID, playerOrder)) {
@@ -871,6 +875,24 @@ public class RedisDatabase implements DatabaseManager {
         }
 
         return mappings;
+    }
+    
+    /**
+     * Removes a player's old PlayerOrder objects from all OrderPrice mappings.
+     * This is necessary before rebuilding mappings to avoid stale data.
+     */
+    private void removePlayerFromAllOrderPrices(UUID playerUUID) {
+        for (BazaarItem item : DeluxeBazaar.getInstance().bazaarItems.values()) {
+            // Remove from buy prices
+            for (OrderPrice orderPrice : item.getBuyPrices()) {
+                orderPrice.getPlayers().remove(playerUUID);
+            }
+            
+            // Remove from sell prices
+            for (OrderPrice orderPrice : item.getSellPrices()) {
+                orderPrice.getPlayers().remove(playerUUID);
+            }
+        }
     }
 
     /**

@@ -1,6 +1,7 @@
 package me.sedattr.deluxebazaar.menus;
 
 import me.sedattr.deluxebazaar.DeluxeBazaar;
+import me.sedattr.deluxebazaar.database.HybridDatabase;
 import me.sedattr.deluxebazaar.database.MySQLDatabase;
 import me.sedattr.deluxebazaar.database.RedisDatabase;
 import me.sedattr.deluxebazaar.inventoryapi.HInventory;
@@ -83,7 +84,10 @@ public class OrdersMenu {
         if (this.section == null)
             return;
 
-        if (reloadFromRedis && DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
+        if (reloadFromRedis && DeluxeBazaar.getInstance().databaseManager instanceof HybridDatabase) {
+            // HybridDatabase loads from Redis cache for real-time data
+            // No need to explicitly reload as HybridDatabase handles this via pub/sub
+        } else if (reloadFromRedis && DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
             RedisDatabase redisDb = (RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
             redisDb.loadPlayerFromRedis(player.getUniqueId());
         }
@@ -179,7 +183,10 @@ public class OrdersMenu {
                             playerBazaar.getSellOffers().remove(playerOrder);
                     }
 
-                    if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
+                    if (DeluxeBazaar.getInstance().databaseManager instanceof HybridDatabase) {
+                        HybridDatabase hybridDb = (HybridDatabase) DeluxeBazaar.getInstance().databaseManager;
+                        hybridDb.savePlayerAsync(player.getUniqueId(), playerBazaar);
+                    } else if (DeluxeBazaar.getInstance().databaseManager instanceof MySQLDatabase) {
                         MySQLDatabase mysqlDb = (MySQLDatabase) DeluxeBazaar.getInstance().databaseManager;
                         mysqlDb.savePlayer(player.getUniqueId(), playerBazaar);
                     } else if (DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {

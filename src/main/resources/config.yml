@@ -57,14 +57,17 @@ economy:
 
 # PLUGIN DATABASE
 database:
-  type: "yaml" # Types: redis, mysql, sqlite, yaml
+  type: "yaml" # Types: hybrid, redis, mysql, sqlite, yaml
+  # HYBRID MODE (Recommended for cross-server networks)
+  # Combines Redis (fast real-time sync) + MySQL (durable persistent storage)
+  # Similar to how HuskSync handles player data synchronization
   auto_save:
     player_orders: false # When player orders are changed, should plugin save directly?
     item_orders: false # When item orders are changed, should plugin save directly?
     item_prices: false # When item prices are changed, should plugin save directly?
-  # Cross-server sync settings (only works with MySQL, not needed for Redis)
+  # Cross-server sync settings (only works with MySQL, not needed for Redis or Hybrid)
   sync_interval: 30 # Seconds between syncing data from database (0 to disable, recommended: 30-60)
-  redis_settings: # For Redis database (real-time pub/sub sync)
+  redis_settings: # For Redis database (real-time pub/sub sync) - Used by both 'redis' and 'hybrid' modes
     host: "localhost"
     port: 6379
     password: "" # Leave empty if no password
@@ -72,11 +75,30 @@ database:
     channel_prefix: "deluxebazaar:" # Prefix for pub/sub channels
     use_ssl: false # Enable SSL/TLS for secure connections (required for Upstash, AWS ElastiCache with encryption)
     smart_save: true # Only save online players on shutdown to prevent overwriting other servers' data (recommended: true)
-  mysql_settings: # For mysql dataabase
+  mysql_settings: # For MySQL database - Used by both 'mysql' and 'hybrid' modes
     link: "com.mysql.jdbc.Driver" # new version: com.mysql.cj.jdbc.Driver
     url: "jdbc:mysql://localhost:1907/Bazaar" # jdbc:mysql://host:port/database
     user: "SedatTR" # MySQL Database-username
     password: "DeluxeBazaar" # MySQL Database-password
+  # HYBRID DATABASE SETTINGS (only used when type is 'hybrid')
+  # Architecture: Redis = fast cache + pub/sub | MySQL = persistent storage
+  # Flow: Changes -> Redis (instant cross-server sync) -> MySQL (background durability)
+  hybrid_settings:
+    # Sync mode determines how data is coordinated between Redis and MySQL
+    # LOCKSTEP: Coordinated writes - best for most networks (recommended)
+    # DELAY: Applies short delay before Redis updates - for very stable networks
+    sync_mode: "LOCKSTEP"
+    # Network latency in milliseconds (only used in DELAY mode)
+    # Higher values = more tolerance for network lag, but slower sync
+    network_latency_milliseconds: 100
+    # How often to flush queued writes to MySQL (in seconds)
+    # Lower = more frequent writes, higher durability
+    # Higher = better MySQL performance, slightly delayed persistence
+    mysql_write_interval: 30
+    # Write to MySQL on every change (true) or only on shutdown (false)
+    # true = Maximum durability, slightly higher MySQL load
+    # false = Better performance, data only persisted on shutdown/interval
+    write_mysql_on_change: true
 
 # PLUGIN ADDONS
 addons:

@@ -122,19 +122,44 @@ public class ConfirmMenu {
 
                 ConfigurationSection buyOrderSection = DeluxeBazaar.getInstance().configFile.getConfigurationSection("buy_order");
                 if (buyOrderSection.getBoolean("limit_price_change")) {
-                    double currentBuyPrice = BazaarItemHook.getSellPrice(player, name, 1);
-                    double maximumChange = buyOrderSection.getDouble("maximum_price_change");
+                    // Check if using base price limits (anti-manipulation) or legacy current price limits
+                    if (buyOrderSection.getBoolean("use_base_price_limit", false)) {
+                        double basePrice = BazaarItemHook.getDefaultBuyPrice(name);
+                        if (basePrice > 0) {
+                            double maxAbovePercent = buyOrderSection.getDouble("max_above_base_percent", 200.0);
+                            double maxBelowPercent = buyOrderSection.getDouble("max_below_base_percent", 50.0);
+                            double maxPrice = basePrice * (1 + maxAbovePercent / 100.0);
+                            double minPrice = basePrice * (1 - maxBelowPercent / 100.0);
+                            
+                            if (unitPrice > maxPrice) {
+                                Utils.sendMessage(player, "price_too_high", new PlaceholderUtil()
+                                        .addPlaceholder("%max_price%", DeluxeBazaar.getInstance().numberFormat.format(maxPrice))
+                                        .addPlaceholder("%base_price%", DeluxeBazaar.getInstance().numberFormat.format(basePrice)));
+                                return;
+                            }
+                            if (unitPrice < minPrice) {
+                                Utils.sendMessage(player, "price_too_low", new PlaceholderUtil()
+                                        .addPlaceholder("%min_price%", DeluxeBazaar.getInstance().numberFormat.format(minPrice))
+                                        .addPlaceholder("%base_price%", DeluxeBazaar.getInstance().numberFormat.format(basePrice)));
+                                return;
+                            }
+                        }
+                    } else {
+                        // Legacy: compare against current market price
+                        double currentBuyPrice = BazaarItemHook.getSellPrice(player, name, 1);
+                        double maximumChange = buyOrderSection.getDouble("maximum_price_change");
 
-                    if ((unitPrice - currentBuyPrice) > maximumChange) {
-                        Utils.sendMessage(player, "overbidding");
-                        return;
-                    } else if ((currentBuyPrice - unitPrice) > maximumChange) {
-                        Utils.sendMessage(player, "underbidding");
-                        return;
+                        if ((unitPrice - currentBuyPrice) > maximumChange) {
+                            Utils.sendMessage(player, "overbidding");
+                            return;
+                        } else if ((currentBuyPrice - unitPrice) > maximumChange) {
+                            Utils.sendMessage(player, "underbidding");
+                            return;
+                        }
                     }
                 }
 
-                PlayerCreatedOrderEvent orderEvent = new PlayerCreatedOrderEvent(player, bazaarItem, OrderType.BUY, price/amount, amount);
+                PlayerCreatedOrderEvent orderEvent = new PlayerCreatedOrderEvent(player, bazaarItem, OrderType.BUY, unitPrice, amount);
                 Bukkit.getPluginManager().callEvent(orderEvent);
                 if (orderEvent.isCancelled())
                     return;
@@ -177,23 +202,42 @@ public class ConfirmMenu {
                     return;
                 }
 
-                double price = BazaarItemHook.getDefaultSellPrice(name);
-                if (price > 0.0 && unitPrice < price) {
-                    Utils.sendMessage(player, "wrong_price");
-                    return;
-                }
-
                 ConfigurationSection sellOfferSection = DeluxeBazaar.getInstance().configFile.getConfigurationSection("sell_offer");
                 if (sellOfferSection.getBoolean("limit_price_change")) {
-                    double currentSellPrice = BazaarItemHook.getSellPrice(player, name, 1);
-                    double maximumChange = sellOfferSection.getDouble("maximum_price_change", 999999.0);
+                    // Check if using base price limits (anti-manipulation) or legacy current price limits
+                    if (sellOfferSection.getBoolean("use_base_price_limit", false)) {
+                        double basePrice = BazaarItemHook.getDefaultSellPrice(name);
+                        if (basePrice > 0) {
+                            double maxAbovePercent = sellOfferSection.getDouble("max_above_base_percent", 200.0);
+                            double maxBelowPercent = sellOfferSection.getDouble("max_below_base_percent", 50.0);
+                            double maxPrice = basePrice * (1 + maxAbovePercent / 100.0);
+                            double minPrice = basePrice * (1 - maxBelowPercent / 100.0);
+                            
+                            if (unitPrice > maxPrice) {
+                                Utils.sendMessage(player, "price_too_high", new PlaceholderUtil()
+                                        .addPlaceholder("%max_price%", DeluxeBazaar.getInstance().numberFormat.format(maxPrice))
+                                        .addPlaceholder("%base_price%", DeluxeBazaar.getInstance().numberFormat.format(basePrice)));
+                                return;
+                            }
+                            if (unitPrice < minPrice) {
+                                Utils.sendMessage(player, "price_too_low", new PlaceholderUtil()
+                                        .addPlaceholder("%min_price%", DeluxeBazaar.getInstance().numberFormat.format(minPrice))
+                                        .addPlaceholder("%base_price%", DeluxeBazaar.getInstance().numberFormat.format(basePrice)));
+                                return;
+                            }
+                        }
+                    } else {
+                        // Legacy: compare against current market price
+                        double currentSellPrice = BazaarItemHook.getSellPrice(player, name, 1);
+                        double maximumChange = sellOfferSection.getDouble("maximum_price_change", 999999.0);
 
-                    if ((unitPrice - currentSellPrice) > maximumChange) {
-                        Utils.sendMessage(player, "underbidding");
-                        return;
-                    } else if ((currentSellPrice - unitPrice) > maximumChange) {
-                        Utils.sendMessage(player, "overbidding");
-                        return;
+                        if ((unitPrice - currentSellPrice) > maximumChange) {
+                            Utils.sendMessage(player, "underbidding");
+                            return;
+                        } else if ((currentSellPrice - unitPrice) > maximumChange) {
+                            Utils.sendMessage(player, "overbidding");
+                            return;
+                        }
                     }
                 }
 
@@ -209,7 +253,7 @@ public class ConfirmMenu {
                     return;
                 }
 
-                PlayerCreatedOrderEvent orderEvent = new PlayerCreatedOrderEvent(player, bazaarItem, OrderType.SELL, price/amount, amount);
+                PlayerCreatedOrderEvent orderEvent = new PlayerCreatedOrderEvent(player, bazaarItem, OrderType.SELL, unitPrice, amount);
                 Bukkit.getPluginManager().callEvent(orderEvent);
                 if (orderEvent.isCancelled())
                     return;

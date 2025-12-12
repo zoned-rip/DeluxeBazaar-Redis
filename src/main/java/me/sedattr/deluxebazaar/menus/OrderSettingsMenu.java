@@ -150,15 +150,40 @@ public class OrderSettingsMenu implements MenuManager {
 
             ConfigurationSection buyOrderSection = DeluxeBazaar.getInstance().configFile.getConfigurationSection("buy_order");
             if (buyOrderSection != null && buyOrderSection.getBoolean("limit_price_change")) {
-                double currentBuyPrice = BazaarItemHook.getSellPrice(player, this.order.getItem().getName(), 1);
-                double maximumChange = buyOrderSection.getDouble("maximum_price_change");
+                // Check if using base price limits (anti-manipulation) or legacy current price limits
+                if (buyOrderSection.getBoolean("use_base_price_limit", false)) {
+                    double basePrice = BazaarItemHook.getDefaultBuyPrice(this.order.getItem().getName());
+                    if (basePrice > 0) {
+                        double maxAbovePercent = buyOrderSection.getDouble("max_above_base_percent", 200.0);
+                        double maxBelowPercent = buyOrderSection.getDouble("max_below_base_percent", 50.0);
+                        double maxPrice = basePrice * (1 + maxAbovePercent / 100.0);
+                        double minPrice = basePrice * (1 - maxBelowPercent / 100.0);
+                        
+                        if (number > maxPrice) {
+                            Utils.sendMessage(player, "price_too_high", new PlaceholderUtil()
+                                    .addPlaceholder("%max_price%", DeluxeBazaar.getInstance().numberFormat.format(maxPrice))
+                                    .addPlaceholder("%base_price%", DeluxeBazaar.getInstance().numberFormat.format(basePrice)));
+                            return;
+                        }
+                        if (number < minPrice) {
+                            Utils.sendMessage(player, "price_too_low", new PlaceholderUtil()
+                                    .addPlaceholder("%min_price%", DeluxeBazaar.getInstance().numberFormat.format(minPrice))
+                                    .addPlaceholder("%base_price%", DeluxeBazaar.getInstance().numberFormat.format(basePrice)));
+                            return;
+                        }
+                    }
+                } else {
+                    // Legacy: compare against current market price
+                    double currentBuyPrice = BazaarItemHook.getSellPrice(player, this.order.getItem().getName(), 1);
+                    double maximumChange = buyOrderSection.getDouble("maximum_price_change");
 
-                if ((number - currentBuyPrice) > maximumChange) {
-                    Utils.sendMessage(player, "overbidding");
-                    return;
-                } else if ((currentBuyPrice - number) > maximumChange) {
-                    Utils.sendMessage(player, "underbidding");
-                    return;
+                    if ((number - currentBuyPrice) > maximumChange) {
+                        Utils.sendMessage(player, "overbidding");
+                        return;
+                    } else if ((currentBuyPrice - number) > maximumChange) {
+                        Utils.sendMessage(player, "underbidding");
+                        return;
+                    }
                 }
             }
 
@@ -178,23 +203,42 @@ public class OrderSettingsMenu implements MenuManager {
                 return;
             }
 
-            double price = BazaarItemHook.getDefaultSellPrice(this.order.getItem().getName());
-            if (price > 0.0 && number < price) {
-                Utils.sendMessage(player, "wrong_price");
-                return;
-            }
-
             ConfigurationSection sellOfferSection = DeluxeBazaar.getInstance().configFile.getConfigurationSection("sell_offer");
             if (sellOfferSection != null && sellOfferSection.getBoolean("limit_price_change")) {
-                double currentSellPrice = BazaarItemHook.getSellPrice(player, this.order.getItem().getName(), 1);
-                double maximumChange = sellOfferSection.getDouble("maximum_price_change", 999999.0);
+                // Check if using base price limits (anti-manipulation) or legacy current price limits
+                if (sellOfferSection.getBoolean("use_base_price_limit", false)) {
+                    double basePrice = BazaarItemHook.getDefaultSellPrice(this.order.getItem().getName());
+                    if (basePrice > 0) {
+                        double maxAbovePercent = sellOfferSection.getDouble("max_above_base_percent", 200.0);
+                        double maxBelowPercent = sellOfferSection.getDouble("max_below_base_percent", 50.0);
+                        double maxPrice = basePrice * (1 + maxAbovePercent / 100.0);
+                        double minPrice = basePrice * (1 - maxBelowPercent / 100.0);
+                        
+                        if (number > maxPrice) {
+                            Utils.sendMessage(player, "price_too_high", new PlaceholderUtil()
+                                    .addPlaceholder("%max_price%", DeluxeBazaar.getInstance().numberFormat.format(maxPrice))
+                                    .addPlaceholder("%base_price%", DeluxeBazaar.getInstance().numberFormat.format(basePrice)));
+                            return;
+                        }
+                        if (number < minPrice) {
+                            Utils.sendMessage(player, "price_too_low", new PlaceholderUtil()
+                                    .addPlaceholder("%min_price%", DeluxeBazaar.getInstance().numberFormat.format(minPrice))
+                                    .addPlaceholder("%base_price%", DeluxeBazaar.getInstance().numberFormat.format(basePrice)));
+                            return;
+                        }
+                    }
+                } else {
+                    // Legacy: compare against current market price
+                    double currentSellPrice = BazaarItemHook.getSellPrice(player, this.order.getItem().getName(), 1);
+                    double maximumChange = sellOfferSection.getDouble("maximum_price_change", 999999.0);
 
-                if ((number - currentSellPrice) > maximumChange) {
-                    Utils.sendMessage(player, "underbidding");
-                    return;
-                } else if ((currentSellPrice - number) > maximumChange) {
-                    Utils.sendMessage(player, "overbidding");
-                    return;
+                    if ((number - currentSellPrice) > maximumChange) {
+                        Utils.sendMessage(player, "underbidding");
+                        return;
+                    } else if ((currentSellPrice - number) > maximumChange) {
+                        Utils.sendMessage(player, "overbidding");
+                        return;
+                    }
                 }
             }
         }

@@ -275,8 +275,11 @@ item_name_detection:
 
 # BUY ORDER SETTINGS
 buy_order:
-  limit_price_change: true # When enabled, the price of a given item cannot change more than by a certain % each price-update cycle. Set to false to disable limitation-system entirely
-  maximum_price_change: 10.0 # Factor in % relative to current-price an item can change each price-update cycle
+  limit_price_change: true # When enabled, limits how far order prices can deviate from base prices (prevents market manipulation)
+  maximum_price_change: 10.0 # Maximum % deviation from current market price (legacy, used if use_base_price_limit is false)
+  use_base_price_limit: true # If true, limits prices based on default/base prices instead of current market (recommended to prevent manipulation)
+  max_above_base_percent: 200.0 # Maximum % above the base BUY price a buy order can be (e.g., 200 = up to 3x base price)
+  max_below_base_percent: 50.0 # Maximum % below the base BUY price a buy order can be (e.g., 50 = minimum 0.5x base price)
   maximum_item_amount: 1600 # How many items can players with the default permissions buy per buy-order.
   maximum_order_amount: 10 # How many buy-orders a player with default permissions can have simultaneously
   required_order_amount: 1 # The minimum amount of items a player must buy per buy-order. Set to minimum 1 but feel free to increase if wanted.
@@ -284,8 +287,11 @@ buy_order:
 
 # SELL OFFER SETTINGS
 sell_offer:
-  limit_price_change: true # When enabled, the price of a given item cannot change more than by a certain % each price-update cycle. Set to false to disable limitation-system entirely
-  maximum_price_change: 10.0 # Factor in % relative to current-price an item can change each price-update cycle
+  limit_price_change: true # When enabled, limits how far order prices can deviate from base prices (prevents market manipulation)
+  maximum_price_change: 10.0 # Maximum % deviation from current market price (legacy, used if use_base_price_limit is false)
+  use_base_price_limit: true # If true, limits prices based on default/base prices instead of current market (recommended to prevent manipulation)
+  max_above_base_percent: 200.0 # Maximum % above the base SELL price a sell offer can be (e.g., 200 = up to 3x base price)
+  max_below_base_percent: 50.0 # Maximum % below the base SELL price a sell offer can be (e.g., 50 = minimum 0.5x base price)
   maximum_item_amount: 1600 # How many items can players with the default permissions sell per sell-order.
   maximum_offer_amount: 10 # How many sell-orders a player with default permissions can have simultaneously
   required_offer_amount: 1 # The minimum amount of items a player must buy per buy-order. Set to minimum 1 but feel free to increase if wanted.

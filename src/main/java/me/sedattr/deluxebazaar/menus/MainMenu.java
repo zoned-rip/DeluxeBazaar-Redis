@@ -128,9 +128,11 @@ public class MainMenu implements MenuManager {
         List<PlayerOrder> sellOffers = playerBazaar.getSellOffers();
 
         ItemStack newManageItem = this.manage.clone();
+        ClickableItem clickableItem;
+        
         if (buyOrders.isEmpty() && sellOffers.isEmpty()) {
             Utils.changeLore(newManageItem, manageSection.getStringList("lore.none"), null);
-            this.gui.setItem(this.section.getInt("manage.slot") - 1, ClickableItem.empty(newManageItem));
+            clickableItem = ClickableItem.empty(newManageItem);
         } else {
             int totalCount = 0;
             double totalPrice = 0.0;
@@ -177,9 +179,23 @@ public class MainMenu implements MenuManager {
             }
 
             Utils.changeLore(newManageItem, lore, null);
-            this.gui.setItem(this.section.getInt("manage.slot") - 1, ClickableItem.of(newManageItem, (event -> {
+            clickableItem = ClickableItem.of(newManageItem, (event -> {
                 new OrdersMenu(player).openMenu(1);
-            })));
+            }));
+        }
+        
+        List<Integer> slots = manageSection.getIntegerList("slots");
+        if (slots.isEmpty()) {
+            int singleSlot = manageSection.getInt("slot");
+            if (singleSlot > 0) {
+                this.gui.setItem(singleSlot - 1, clickableItem);
+            }
+        } else {
+            for (int slot : slots) {
+                if (slot > 0) {
+                    this.gui.setItem(slot - 1, clickableItem);
+                }
+            }
         }
     }
 
@@ -188,9 +204,11 @@ public class MainMenu implements MenuManager {
         HashMap<String, Integer> sellableItems = this.playerBazaar.getSellableItems();
 
         ConfigurationSection sellSection = this.section.getConfigurationSection("sell");
+        ClickableItem clickableItem;
+        
         if (sellableItems.isEmpty()) {
             Utils.changeLore(newSellItem, sellSection.getStringList("lore.nothing"), null);
-            this.gui.setItem(this.section.getInt("sell.slot") - 1, ClickableItem.of(newSellItem, (event) -> Utils.sendMessage(player, "no_sellable_item")));
+            clickableItem = ClickableItem.of(newSellItem, (event) -> Utils.sendMessage(player, "no_sellable_item"));
         } else {
             List<String> lore = new ArrayList<>();
             double price = 0;
@@ -255,7 +273,21 @@ public class MainMenu implements MenuManager {
             });
 
             Utils.changeLore(newSellItem, lore, null);
-            this.gui.setItem(this.section.getInt("sell.slot") - 1, ClickableItem.of(newSellItem, (event -> new SellAllMenu(player).openMenu(newSellableItems))));
+            clickableItem = ClickableItem.of(newSellItem, (event -> new SellAllMenu(player).openMenu(newSellableItems)));
+        }
+        
+        List<Integer> slots = sellSection.getIntegerList("slots");
+        if (slots.isEmpty()) {
+            int singleSlot = sellSection.getInt("slot");
+            if (singleSlot > 0) {
+                this.gui.setItem(singleSlot - 1, clickableItem);
+            }
+        } else {
+            for (int slot : slots) {
+                if (slot > 0) {
+                    this.gui.setItem(slot - 1, clickableItem);
+                }
+            }
         }
     }
 

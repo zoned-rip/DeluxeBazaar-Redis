@@ -6,7 +6,7 @@
 
     <groupId>me.sedattr.deluxebazaar</groupId>
     <artifactId>DeluxeBazaar</artifactId>
-    <version>11.2-Redis</version>
+    <version>11.3-Redis</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

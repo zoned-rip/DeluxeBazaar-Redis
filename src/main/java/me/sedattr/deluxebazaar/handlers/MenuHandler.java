@@ -34,19 +34,26 @@ public class MenuHandler {
             return;
 
         for (String key : keys) {
-            int slot = section.getInt(key + ".slot");
-            if (slot <= 0)
-                continue;
+            List<Integer> slots = section.getIntegerList(key + ".slots");
+            int singleSlot = section.getInt(key + ".slot");
+            
+            if (slots.isEmpty()) {
+                if (singleSlot <= 0)
+                    continue;
+                slots = List.of(singleSlot);
+            }
 
             ItemStack item = Utils.createItemFromSection(section.getConfigurationSection(key), null);
             if (item == null)
                 continue;
 
             List<String> commands = section.getStringList(key + ".commands");
+            ClickableItem clickableItem;
+            
             if (commands.isEmpty())
-                gui.setItem(slot, ClickableItem.empty(item));
+                clickableItem = ClickableItem.empty(item);
             else
-                gui.setItem(slot, ClickableItem.of(item, (event) -> {
+                clickableItem = ClickableItem.of(item, (event) -> {
                     for (String command : commands) {
                         command = command
                                 .replace("%player_displayname%", player.getDisplayName())
@@ -64,7 +71,12 @@ public class MenuHandler {
                                     .replace("[console] ", "")
                                     .replace("[console]", ""));
                     }
-                }));
+                });
+            
+            for (int slot : slots) {
+                if (slot > 0)
+                    gui.setItem(slot, clickableItem);
+            }
         }
     }
 

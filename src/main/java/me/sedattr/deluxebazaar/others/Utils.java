@@ -401,6 +401,28 @@ public class Utils {
         if (DeluxeBazaar.getInstance().version > 13 && section.getInt("model", 0) != 0)
             meta.setCustomModelData(section.getInt("model"));
 
+        String tooltipStyle = section.getString("tooltip_style");
+        if (tooltipStyle != null && !tooltipStyle.isEmpty() && DeluxeBazaar.getInstance().version >= 21) {
+            try {
+                org.bukkit.NamespacedKey tooltipKey = org.bukkit.NamespacedKey.fromString(tooltipStyle);
+                if (tooltipKey != null) {
+                    java.lang.reflect.Method setTooltipStyleMethod = meta.getClass().getMethod("setTooltipStyle", org.bukkit.NamespacedKey.class);
+                    setTooltipStyleMethod.invoke(meta, tooltipKey);
+                }
+            } catch (NoSuchMethodException e) {
+                try {
+                    item.setItemMeta(meta);
+                    de.tr7zw.changeme.nbtapi.NBTItem nbtItem = new de.tr7zw.changeme.nbtapi.NBTItem(item);
+                    nbtItem.setString("tooltip_style", tooltipStyle);
+                    item = nbtItem.getItem();
+                    meta = item.getItemMeta();
+                } catch (Exception ignored) {
+                }
+            } catch (Exception e) {
+                Logger.sendConsoleMessage("&eInvalid tooltip style '" + tooltipStyle + "': " + e.getMessage(), Logger.LogLevel.WARN);
+            }
+        }
+
         item.setItemMeta(meta);
 
         List<String> enchants = section.getStringList("enchants");

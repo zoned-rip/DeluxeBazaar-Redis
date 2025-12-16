@@ -111,7 +111,8 @@ public class SellMenu implements MenuManager {
             if (itemType.equalsIgnoreCase("fill"))
                 item.setAmount(Math.max(emptySlots / item.getMaxStackSize(), 1));
 
-            gui.setItem(itemsSection.getInt(entry + ".slot") - 1, ClickableItem.of(item, (event) -> {
+            ConfigurationSection entrySection = itemsSection.getConfigurationSection(entry);
+            me.sedattr.deluxebazaar.handlers.MenuHandler.setItemInSlots(gui, entrySection, ClickableItem.of(item, (event) -> {
                 if (BazaarItemHook.getDefaultSellPrice(name) <= 0.0) {
                     Utils.sendMessage(this.player, "selling_disabled_for_item", placeholderUtil);
                     return;

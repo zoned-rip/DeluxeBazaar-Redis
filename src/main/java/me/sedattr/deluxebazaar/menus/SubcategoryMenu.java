@@ -2,6 +2,7 @@ package me.sedattr.deluxebazaar.menus;
 
 import me.sedattr.deluxebazaar.DeluxeBazaar;
 import me.sedattr.bazaarapi.BazaarItemHook;
+import me.sedattr.deluxebazaar.handlers.MenuHandler;
 import me.sedattr.deluxebazaar.inventoryapi.HInventory;
 import me.sedattr.deluxebazaar.inventoryapi.item.ClickableItem;
 import me.sedattr.deluxebazaar.managers.BazaarItem;
@@ -224,7 +225,8 @@ public class SubcategoryMenu {
             });
 
             Utils.changeLore(sell, lore, null);
-            gui.setItem(this.section.getInt("sell.slot") - 1,
+            ConfigurationSection sellConfigSection = this.section.getConfigurationSection("sell");
+            MenuHandler.setItemInSlots(gui, sellConfigSection,
                     ClickableItem.of(sell, (event -> new SellAllMenu(player).openMenu(itemList))));
         }
     }

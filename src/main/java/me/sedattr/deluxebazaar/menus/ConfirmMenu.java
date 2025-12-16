@@ -3,6 +3,7 @@ package me.sedattr.deluxebazaar.menus;
 import me.sedattr.deluxebazaar.DeluxeBazaar;
 import me.sedattr.bazaarapi.BazaarItemHook;
 import me.sedattr.bazaarapi.events.PlayerCreatedOrderEvent;
+import me.sedattr.deluxebazaar.handlers.MenuHandler;
 import me.sedattr.deluxebazaar.inventoryapi.HInventory;
 import me.sedattr.deluxebazaar.inventoryapi.item.ClickableItem;
 import me.sedattr.deluxebazaar.managers.BazaarItem;
@@ -64,7 +65,8 @@ public class ConfirmMenu {
             Utils.changeLore(newItem, lore, placeholderUtil);
         Utils.addMenuItemFlags(newItem);
 
-        gui.setItem(menuSection.getInt("item.slot") - 1, ClickableItem.of(newItem, (event) -> {
+        ConfigurationSection itemSection = menuSection.getConfigurationSection("item");
+        MenuHandler.setItemInSlots(gui, itemSection, ClickableItem.of(newItem, (event) -> {
             if (type.equalsIgnoreCase("buy")) {
                 int emptySlots = DeluxeBazaar.getInstance().itemHandler.getEmptySlots(player, exampleItem);
                 if (emptySlots < 1) {

@@ -116,7 +116,8 @@ public class BuyMenu implements MenuManager {
             if (itemType.equalsIgnoreCase("fill"))
                 item.setAmount(Math.max(emptySlots / exampleItem.getMaxStackSize(), 1));
 
-            gui.setItem(itemsSection.getInt(entry + ".slot") - 1, ClickableItem.of(item, (event) -> {
+            ConfigurationSection entrySection = itemsSection.getConfigurationSection(entry);
+            me.sedattr.deluxebazaar.handlers.MenuHandler.setItemInSlots(gui, entrySection, ClickableItem.of(item, (event) -> {
                 if (BazaarItemHook.getDefaultBuyPrice(name) <= 0.0) {
                     Utils.sendMessage(this.player, "buying_disabled_for_item", placeholderUtil);
                     return;

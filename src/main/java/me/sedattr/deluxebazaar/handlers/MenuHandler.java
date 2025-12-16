@@ -153,9 +153,43 @@ public class MenuHandler {
                 .setId(type)
                 .create();
 
-        addCustomItems(player, gui, section);
+        boolean skipCustomItems = type.equalsIgnoreCase("setBuyOrder") || 
+                                   type.equalsIgnoreCase("setSellOffer") ||
+                                   type.equalsIgnoreCase("buyOrder") ||
+                                   type.equalsIgnoreCase("sellOffer") ||
+                                   type.equalsIgnoreCase("buy") ||
+                                   type.equalsIgnoreCase("sell") ||
+                                   type.equalsIgnoreCase("sellAll");
+        
+        if (!skipCustomItems) {
+            addCustomItems(player, gui, section);
+        }
         addNormalItems(player, gui, section, type);
         return gui;
+    }
+
+    /**
+     * Sets an item in multiple slots. Supports both single 'slot' and multiple 'slots' from config.
+     * @param gui The inventory to set items in
+     * @param section The config section containing slot/slots
+     * @param clickableItem The item to place
+     */
+    public static void setItemInSlots(HInventory gui, ConfigurationSection section, ClickableItem clickableItem) {
+        if (section == null || clickableItem == null) return;
+        
+        List<Integer> slots = section.getIntegerList("slots");
+        if (slots.isEmpty()) {
+            int singleSlot = section.getInt("slot");
+            if (singleSlot > 0) {
+                gui.setItem(singleSlot - 1, clickableItem);
+            }
+        } else {
+            for (int slot : slots) {
+                if (slot > 0) {
+                    gui.setItem(slot - 1, clickableItem);
+                }
+            }
+        }
     }
 
     public static String capTitle(String s) {

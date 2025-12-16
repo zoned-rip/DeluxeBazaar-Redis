@@ -134,12 +134,13 @@ public class SetBuyOrderMenu implements MenuManager {
             }
 
             double finalUnitPrice = unitPrice;
-            gui.setItem(itemSection.getInt("slot") - 1, ClickableItem.of(item, (event) -> {
+            ClickableItem clickableItem = ClickableItem.of(item, (event) -> {
                 if (itemType.equalsIgnoreCase("custom"))
                     DeluxeBazaar.getInstance().inputMenu.open(player, this);
                 else
                     new ConfirmMenu(player).openMenu(name, "buyOrder", count, finalUnitPrice);
-            }));
+            });
+            me.sedattr.deluxebazaar.handlers.MenuHandler.setItemInSlots(gui, itemSection, clickableItem);
         }
 
         int goBackSlot = this.section.getInt("back");

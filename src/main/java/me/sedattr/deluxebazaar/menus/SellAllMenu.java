@@ -47,14 +47,14 @@ public class SellAllMenu {
 
             ItemStack confirm = Utils.createItemFromSection(itemSection, placeholders);
 
-            if (confirm != null)
-                gui.setItem(itemSection.getInt("slot") - 1, ClickableItem.of(confirm, (event) -> {
+            if (confirm != null) {
+                ClickableItem confirmClickable = ClickableItem.of(confirm, (event) -> {
                     boolean goBack = DeluxeBazaar.getInstance().configFile.getBoolean("settings.go_back_when_sold", false);
                     if (!goBack) {
                         ConfigurationSection soldSection = this.section.getConfigurationSection("confirm.sold");
                         if (soldSection != null) {
                             ItemStack sold = Utils.createItemFromSection(soldSection, placeholders);
-                            gui.setItem(soldSection.getInt("slot", (itemSection.getInt("slot") - 1)) - 1, ClickableItem.empty(sold));
+                            me.sedattr.deluxebazaar.handlers.MenuHandler.setItemInSlots(gui, soldSection, ClickableItem.empty(sold));
                         }
                     }
 
@@ -62,14 +62,18 @@ public class SellAllMenu {
                     if (goBack) {
                         new MainMenu(player).openMenu(DeluxeBazaar.getInstance().players.getOrDefault(player.getUniqueId(), new PlayerBazaar(player.getUniqueId())).getCategory(), 1);
                     }
-                }));
+                });
+                me.sedattr.deluxebazaar.handlers.MenuHandler.setItemInSlots(gui, itemSection, confirmClickable);
+            }
         }
 
         ConfigurationSection cancelSection = this.section.getConfigurationSection("cancel");
         if (cancelSection != null) {
             ItemStack cancel = Utils.createItemFromSection(cancelSection, null);
-            if (cancel != null)
-                gui.setItem(cancelSection.getInt("slot") - 1, ClickableItem.of(cancel, (event) -> player.closeInventory()));
+            if (cancel != null) {
+                me.sedattr.deluxebazaar.handlers.MenuHandler.setItemInSlots(gui, cancelSection, 
+                    ClickableItem.of(cancel, (event) -> player.closeInventory()));
+            }
         }
 
         gui.open(player);

@@ -2,6 +2,7 @@ package me.sedattr.deluxebazaar.menus;
 
 import me.sedattr.deluxebazaar.DeluxeBazaar;
 import me.sedattr.bazaarapi.BazaarItemHook;
+import me.sedattr.deluxebazaar.handlers.MenuHandler;
 import me.sedattr.deluxebazaar.inventoryapi.HInventory;
 import me.sedattr.deluxebazaar.inventoryapi.item.ClickableItem;
 import me.sedattr.deluxebazaar.managers.BazaarItem;
@@ -88,8 +89,9 @@ public class ItemMenu {
                 .addPlaceholder("%sell_price_stack%", DeluxeBazaar.getInstance().numberFormat.format(sellPrice * exampleItem.getMaxStackSize()));
 
         ItemStack buy = Utils.createItemFromSection(this.section.getConfigurationSection("buy"), placeholderUtil);
-        if (buy != null)
-            gui.setItem(this.section.getInt("buy.slot") - 1, ClickableItem.of(buy, (event) -> {
+        if (buy != null) {
+            ConfigurationSection buySection = this.section.getConfigurationSection("buy");
+            MenuHandler.setItemInSlots(gui, buySection, ClickableItem.of(buy, (event) -> {
                 if (BazaarItemHook.getDefaultBuyPrice(name) <= 0.0) {
                     Utils.sendMessage(player, "buying_disabled_for_item", placeholderUtil);
                     return;
@@ -97,6 +99,7 @@ public class ItemMenu {
 
                 new BuyMenu(player).openMenu(name, "default");
             }));
+        }
 
         ItemStack sell = Utils.createItemFromSection(this.section.getConfigurationSection("sell"), placeholderUtil);
         if (sell != null) {
@@ -112,7 +115,8 @@ public class ItemMenu {
                         .replace("%total_price%", DeluxeBazaar.getInstance().numberFormat.format(price)))));
 
                 Utils.changeLore(sell, sellLore, placeholderUtil);
-                gui.setItem(this.section.getInt("sell.slot") - 1, ClickableItem.of(sell, (event) -> {
+                ConfigurationSection sellSection = this.section.getConfigurationSection("sell");
+                MenuHandler.setItemInSlots(gui, sellSection, ClickableItem.of(sell, (event) -> {
                     if (BazaarItemHook.getDefaultSellPrice(name) <= 0.0) {
                         Utils.sendMessage(player, "selling_disabled_for_item", placeholderUtil);
                         return;
@@ -126,7 +130,8 @@ public class ItemMenu {
                         .replace("%price%", DeluxeBazaar.getInstance().numberFormat.format(price)))));
 
                 Utils.changeLore(sell, sellLore, placeholderUtil);
-                gui.setItem(this.section.getInt("sell.slot") - 1, ClickableItem.empty(sell));
+                ConfigurationSection sellSection = this.section.getConfigurationSection("sell");
+                MenuHandler.setItemInSlots(gui, sellSection, ClickableItem.empty(sell));
             }
         }
 
@@ -155,8 +160,8 @@ public class ItemMenu {
 
             Utils.changeLore(buyOrder, lore, placeholderUtil);
 
-
-            gui.setItem(this.section.getInt("buyOrder.slot") - 1, ClickableItem.of(buyOrder, (event) -> {
+            ConfigurationSection buyOrderSection = this.section.getConfigurationSection("buyOrder");
+            MenuHandler.setItemInSlots(gui, buyOrderSection, ClickableItem.of(buyOrder, (event) -> {
                 if (BazaarItemHook.getDefaultSellPrice(name) <= 0.0) {
                     Utils.sendMessage(player, "selling_disabled_for_item", placeholderUtil);
                     return;
@@ -201,7 +206,8 @@ public class ItemMenu {
 
             Utils.changeLore(sellOffer, lore, placeholderUtil);
 
-            gui.setItem(this.section.getInt("sellOffer.slot") - 1, ClickableItem.of(sellOffer, (event) -> {
+            ConfigurationSection sellOfferSection = this.section.getConfigurationSection("sellOffer");
+            MenuHandler.setItemInSlots(gui, sellOfferSection, ClickableItem.of(sellOffer, (event) -> {
                 if (BazaarItemHook.getDefaultBuyPrice(name) <= 0.0) {
                     Utils.sendMessage(player, "buying_disabled_for_item", placeholderUtil);
                     return;
@@ -212,8 +218,10 @@ public class ItemMenu {
         }
 
         ItemStack stats = Utils.createItemFromSection(this.section.getConfigurationSection("stats"), placeholderUtil);
-        if (stats != null)
-            gui.setItem(this.section.getInt("stats.slot") - 1, ClickableItem.empty(stats));
+        if (stats != null) {
+            ConfigurationSection statsSection = this.section.getConfigurationSection("stats");
+            MenuHandler.setItemInSlots(gui, statsSection, ClickableItem.empty(stats));
+        }
 
         int goBackSlot = this.section.getInt("back");
         ItemStack goBackItem = DeluxeBazaar.getInstance().normalItems.get("goBack");

@@ -3,6 +3,7 @@ package me.sedattr.deluxebazaar.menus;
 import me.sedattr.deluxebazaar.DeluxeBazaar;
 import me.sedattr.bazaarapi.BazaarItemHook;
 import me.sedattr.bazaarapi.events.PlayerDeletedOrderEvent;
+import me.sedattr.deluxebazaar.handlers.MenuHandler;
 import me.sedattr.deluxebazaar.inventoryapi.HInventory;
 import me.sedattr.deluxebazaar.inventoryapi.item.ClickableItem;
 import me.sedattr.deluxebazaar.managers.BazaarItem;
@@ -51,7 +52,8 @@ public class OrderSettingsMenu implements MenuManager {
 
         ItemStack cancel = Utils.createItemFromSection(section.getConfigurationSection("cancel"), placeholderUtil);
         if (cancel != null) {
-            gui.setItem(section.getInt("cancel.slot") - 1, ClickableItem.of(cancel, (event -> {
+            ConfigurationSection cancelSection = section.getConfigurationSection("cancel");
+            MenuHandler.setItemInSlots(gui, cancelSection, ClickableItem.of(cancel, (event -> {
                 PlayerDeletedOrderEvent orderEvent = new PlayerDeletedOrderEvent(player, order);
                 Bukkit.getPluginManager().callEvent(orderEvent);
                 if (orderEvent.isCancelled())
@@ -89,7 +91,8 @@ public class OrderSettingsMenu implements MenuManager {
         ItemStack change = Utils.createItemFromSection(section.getConfigurationSection("change"), placeholderUtil);
         if (change != null) {
             Utils.changeLore(change, section.getStringList("change.lore." + order.getType().name().toLowerCase()), placeholderUtil);
-            gui.setItem(section.getInt("change.slot") - 1, ClickableItem.of(change, (event ->
+            ConfigurationSection changeSection = section.getConfigurationSection("change");
+            MenuHandler.setItemInSlots(gui, changeSection, ClickableItem.of(change, (event ->
                     DeluxeBazaar.getInstance().inputMenu.open(player, this))));
         }
 

@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>me.sedattr.deluxebazaar</groupId>
   <artifactId>DeluxeBazaar</artifactId>
-  <version>11.4-Redis</version>
+  <version>11.5-Redis</version>
   <build>
     <plugins>
       <plugin>

@@ -85,8 +85,6 @@ public class OrdersMenu {
             return;
 
         if (reloadFromRedis && DeluxeBazaar.getInstance().databaseManager instanceof HybridDatabase) {
-            // HybridDatabase loads from Redis cache for real-time data
-            // No need to explicitly reload as HybridDatabase handles this via pub/sub
         } else if (reloadFromRedis && DeluxeBazaar.getInstance().databaseManager instanceof RedisDatabase) {
             RedisDatabase redisDb = (RedisDatabase) DeluxeBazaar.getInstance().databaseManager;
             redisDb.loadPlayerFromRedis(player.getUniqueId());

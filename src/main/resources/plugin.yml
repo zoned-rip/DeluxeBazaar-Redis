@@ -33,3 +33,17 @@ commands:
   bazaaradmin:
     description: Default bazaar admin command.
     aliases: [deluxebazaaradmin, bzadmin, bzradmin]
+
+permissions:
+  deluxebazaar.order.buy.*:
+    description: Unlimited maximum active buy orders.
+    default: op
+  deluxebazaar.order.sell.*:
+    description: Unlimited maximum active sell offers.
+    default: op
+  deluxebazaar.order.buy.7:
+    description: Allows up to 7 active buy orders (highest buy.<n> wins).
+    default: false
+  deluxebazaar.order.sell.7:
+    description: Allows up to 7 active sell offers (highest sell.<n> wins).
+    default: false

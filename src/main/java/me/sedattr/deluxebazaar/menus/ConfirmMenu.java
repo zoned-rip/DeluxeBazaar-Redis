@@ -90,8 +90,9 @@ public class ConfirmMenu {
 
             PlayerBazaar playerBazaar = DeluxeBazaar.getInstance().players.getOrDefault(player.getUniqueId(), new PlayerBazaar(player.getUniqueId()));
             if (type.equalsIgnoreCase("buyOrder")) {
-                int maximumOrderAmount = DeluxeBazaar.getInstance().configFile.getInt("settings.maximum_buy_order_amount");
-                if (maximumOrderAmount > 0 && playerBazaar.getBuyOrders().size() >= maximumOrderAmount) {
+                int defaultMaximumOrderAmount = DeluxeBazaar.getInstance().configFile.getInt("settings.maximum_buy_order_amount");
+                int maximumOrderAmount = Utils.getMaximumBuyOrderAmount(player, defaultMaximumOrderAmount);
+                if (maximumOrderAmount >= 0 && playerBazaar.getBuyOrders().size() >= maximumOrderAmount) {
                     Utils.sendMessage(player, "reached_maximum_buy_order");
                     player.closeInventory();
                     return;
@@ -184,8 +185,9 @@ public class ConfirmMenu {
             }
 
             if (type.equalsIgnoreCase("sellOffer")) {
-                int maximumOrderAmount = DeluxeBazaar.getInstance().configFile.getInt("settings.maximum_sell_offer_amount");
-                if (maximumOrderAmount > 0 && playerBazaar.getSellOffers().size() >= maximumOrderAmount) {
+                int defaultMaximumOrderAmount = DeluxeBazaar.getInstance().configFile.getInt("settings.maximum_sell_offer_amount");
+                int maximumOrderAmount = Utils.getMaximumSellOfferAmount(player, defaultMaximumOrderAmount);
+                if (maximumOrderAmount >= 0 && playerBazaar.getSellOffers().size() >= maximumOrderAmount) {
                     Utils.sendMessage(player, "reached_maximum_sell_offer");
                     player.closeInventory();
                     return;

@@ -25,8 +25,8 @@ settings:
   default_mode: "direct" # Default bazaar mode when opening /bz menu, types: direct, advanced
   sell_normal_items: true # Should players still be able to sell normal items that are not bought from bazaar?
   maximum_item_amount: 2304 # Maximum item amount for custom buy & sell amount. 2304 is equivalent to a full inventory of stacks of 64
-  maximum_buy_order_amount: 8 # Maximum buy order amount per player with default permissions
-  maximum_sell_offer_amount: 8 # Maximum sell offer amount per player wioth default permissions
+  maximum_buy_order_amount: 8 # Default max active buy orders per player (can be overridden by permission: deluxebazaar.order.buy.<n> or deluxebazaar.order.buy.*)
+  maximum_sell_offer_amount: 8 # Default max active sell offers per player (can be overridden by permission: deluxebazaar.order.sell.<n> or deluxebazaar.order.sell.*)
   go_back_when_bought: false # When player bought an item, plugin will open item's menu to player
   go_back_when_sold: false # When player sold an item, plugin will open item's menu to player
   enable_orders: true # Enable or disable order system

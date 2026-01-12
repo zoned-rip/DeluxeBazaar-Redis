@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -20,6 +21,9 @@ import java.util.regex.Pattern;
 
 public class Utils {
     String username = "%%__USERNAME__%%";
+
+    private static final String ORDER_LIMIT_BUY_PREFIX = "deluxebazaar.order.buy.";
+    private static final String ORDER_LIMIT_SELL_PREFIX = "deluxebazaar.order.sell.";
 
     public static boolean checkPermission(CommandSender player, String type, String text) {
         if (player.isOp())
@@ -30,6 +34,69 @@ public class Utils {
             return true;
 
         return player.hasPermission(permission);
+    }
+
+    /**
+     * Resolves the maximum number of active buy orders a player can have.
+     *
+     * Permission format: deluxebazaar.order.buy.<amount>
+     * Highest amount wins.
+     * Optional: deluxebazaar.order.buy.* means unlimited.
+     *
+     * @return -1 for unlimited, otherwise 0+ for a concrete limit
+     */
+    public static int getMaximumBuyOrderAmount(Player player, int defaultLimit) {
+        return getMaximumOrderAmountFromPermissions(player, ORDER_LIMIT_BUY_PREFIX, defaultLimit);
+    }
+
+    /**
+     * Resolves the maximum number of active sell offers a player can have.
+     *
+     * Permission format: deluxebazaar.order.sell.<amount>
+     * Highest amount wins.
+     * Optional: deluxebazaar.order.sell.* means unlimited.
+     *
+     * @return -1 for unlimited, otherwise 0+ for a concrete limit
+     */
+    public static int getMaximumSellOfferAmount(Player player, int defaultLimit) {
+        return getMaximumOrderAmountFromPermissions(player, ORDER_LIMIT_SELL_PREFIX, defaultLimit);
+    }
+
+    private static int getMaximumOrderAmountFromPermissions(Player player, String prefix, int defaultLimit) {
+        if (player == null)
+            return defaultLimit;
+
+        if (player.isOp())
+            return -1;
+
+        int maximum = Integer.MIN_VALUE;
+        for (PermissionAttachmentInfo info : player.getEffectivePermissions()) {
+            if (info == null || !info.getValue())
+                continue;
+
+            String permission = info.getPermission();
+            if (permission == null)
+                continue;
+
+            permission = permission.toLowerCase(Locale.ROOT);
+            if (!permission.startsWith(prefix))
+                continue;
+
+            String suffix = permission.substring(prefix.length());
+            if (suffix.equals("*"))
+                return -1;
+
+            try {
+                int value = Integer.parseInt(suffix);
+                maximum = Math.max(maximum, value);
+            } catch (NumberFormatException ignored) {
+            }
+        }
+
+        if (maximum != Integer.MIN_VALUE)
+            return maximum;
+
+        return defaultLimit;
     }
 
 

@@ -6,7 +6,7 @@
 
     <groupId>me.sedattr.deluxebazaar</groupId>
     <artifactId>DeluxeBazaar</artifactId>
-    <version>11.5-Redis</version>
+    <version>11.7-Redis</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,8 +15,7 @@
     </properties>
 
     <build>
-        <plugins>
-            <plugin>
+        <plugins>            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.14.2</version>

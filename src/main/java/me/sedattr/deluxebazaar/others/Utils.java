@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +25,8 @@ public class Utils {
 
     private static final String ORDER_LIMIT_BUY_PREFIX = "deluxebazaar.order.buy.";
     private static final String ORDER_LIMIT_SELL_PREFIX = "deluxebazaar.order.sell.";
+
+    private static final Set<String> TOOLTIP_STYLE_WARNED = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     public static boolean checkPermission(CommandSender player, String type, String text) {
         if (player.isOp())
@@ -470,23 +473,30 @@ public class Utils {
 
         String tooltipStyle = section.getString("tooltip_style");
         if (tooltipStyle != null && !tooltipStyle.isEmpty() && DeluxeBazaar.getInstance().version >= 21) {
-            try {
-                org.bukkit.NamespacedKey tooltipKey = org.bukkit.NamespacedKey.fromString(tooltipStyle);
-                if (tooltipKey != null) {
-                    java.lang.reflect.Method setTooltipStyleMethod = meta.getClass().getMethod("setTooltipStyle", org.bukkit.NamespacedKey.class);
-                    setTooltipStyleMethod.invoke(meta, tooltipKey);
-                }
-            } catch (NoSuchMethodException e) {
+            org.bukkit.NamespacedKey tooltipKey = org.bukkit.NamespacedKey.fromString(tooltipStyle);
+            if (tooltipKey != null) {
+                boolean applied = false;
+
                 try {
-                    item.setItemMeta(meta);
-                    de.tr7zw.changeme.nbtapi.NBTItem nbtItem = new de.tr7zw.changeme.nbtapi.NBTItem(item);
-                    nbtItem.setString("tooltip_style", tooltipStyle);
-                    item = nbtItem.getItem();
-                    meta = item.getItemMeta();
-                } catch (Exception ignored) {
+                    java.lang.reflect.Method setTooltipStyleMethod = org.bukkit.inventory.meta.ItemMeta.class.getMethod("setTooltipStyle", org.bukkit.NamespacedKey.class);
+                    setTooltipStyleMethod.invoke(meta, tooltipKey);
+                    applied = true;
+                } catch (Exception reflectionException) {
+                    try {
+                        item.setItemMeta(meta);
+                        de.tr7zw.changeme.nbtapi.NBTItem nbtItem = new de.tr7zw.changeme.nbtapi.NBTItem(item);
+                        nbtItem.setString("tooltip_style", tooltipStyle);
+                        item = nbtItem.getItem();
+                        meta = item.getItemMeta();
+                        applied = true;
+                    } catch (Exception ignored) {
+                    }
+
+                    if (!applied && TOOLTIP_STYLE_WARNED.add(tooltipStyle))
+                        Logger.sendConsoleMessage("&eInvalid tooltip style '" + tooltipStyle + "': " + reflectionException.getMessage(), Logger.LogLevel.WARN);
                 }
-            } catch (Exception e) {
-                Logger.sendConsoleMessage("&eInvalid tooltip style '" + tooltipStyle + "': " + e.getMessage(), Logger.LogLevel.WARN);
+            } else if (TOOLTIP_STYLE_WARNED.add(tooltipStyle)) {
+                Logger.sendConsoleMessage("&eInvalid tooltip style '" + tooltipStyle + "': invalid key", Logger.LogLevel.WARN);
             }
         }
 

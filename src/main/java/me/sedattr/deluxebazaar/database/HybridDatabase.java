@@ -518,24 +518,13 @@ public class HybridDatabase implements DatabaseManager {
                     rebuildPlayerOrderMappings(uuid, playerBazaar);
                     refreshPlayerOrdersMenu(uuid);
                 }
-                
-                if (enableLog) {
-                    Logger.sendConsoleMessage("§a[Hybrid] Synced player data: " + uuid, Logger.LogLevel.INFO);
-                }
             } else if (channel.startsWith(channelPrefix + "item:")) {
                 String itemName = channel.substring((channelPrefix + "item:").length());
                 loadItemFromRedis(itemName);
-                
-                if (enableLog) {
-                    Logger.sendConsoleMessage("§a[Hybrid] Synced item data: " + itemName, Logger.LogLevel.INFO);
-                }
             } else if (channel.startsWith(channelPrefix + "price:")) {
                 String itemName = channel.substring((channelPrefix + "price:").length());
                 loadItemPriceFromRedis(itemName);
                 
-                if (enableLog) {
-                    Logger.sendConsoleMessage("§a[Hybrid] Synced price data: " + itemName, Logger.LogLevel.INFO);
-                }
             }
         } catch (Exception e) {
             Logger.sendConsoleMessage("§c[Hybrid] Error handling Redis message: " + e.getMessage(), Logger.LogLevel.ERROR);

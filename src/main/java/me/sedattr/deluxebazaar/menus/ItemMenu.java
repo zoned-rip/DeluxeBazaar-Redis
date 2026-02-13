@@ -176,8 +176,8 @@ public class ItemMenu {
             ConfigurationSection loreSection = this.section.getConfigurationSection("sellOffer.lore");
             List<OrderPrice> sellOffers = bazaarItem.getSellPrices().stream().sorted(Comparator.comparingDouble(OrderPrice::getPrice)).collect(Collectors.toList());
             
-            boolean enableLog = DeluxeBazaar.getInstance().configFile.getBoolean("settings.enable_log", false);
-            if (enableLog) {
+            boolean itemMenuDebug = DeluxeBazaar.getInstance().configFile.getBoolean("settings.debug.item_menu", false);
+            if (itemMenuDebug) {
                 me.sedattr.deluxebazaar.others.Logger.sendConsoleMessage("§e[DEBUG] ItemMenu: Opening menu for " + name + ", sellOffers count=" + sellOffers.size(), me.sedattr.deluxebazaar.others.Logger.LogLevel.INFO);
                 me.sedattr.deluxebazaar.others.Logger.sendConsoleMessage("§e[DEBUG] ItemMenu: bazaarItem.getSellPrices() size=" + bazaarItem.getSellPrices().size(), me.sedattr.deluxebazaar.others.Logger.LogLevel.INFO);
                 for (OrderPrice order : sellOffers) {

@@ -225,7 +225,7 @@ lores:
       - "&r"
       - "&eClick to view product!"
   subcategory:
-    item_information: "&8▶ &7%item_name%: &a%item_buy_price% &8- &c%item_sell_price%"
+    item_information: "&8▶ &7%item_name%"
     subcategory_information: "&8▶ &7%subcategory_name%"
     advanced:
       - "&8%product_amount% products"
